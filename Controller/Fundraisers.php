@@ -56,6 +56,10 @@ class FundraisersController extends Controller{
 
                 // Check if there are any GET parameters to deal with.
                 if($_GET){
+                  // Check if the API key is there.
+                  if(!$_GET['api_key']){
+                    $this->model->validate('api_key');
+                  }
                   // Validate if we have the criteria.
                   $this->model->validate('criteria', $_GET);
                   // Loop through all the $_GET parameters and check there are no invalid values.
@@ -117,6 +121,10 @@ class FundraisersController extends Controller{
 
                 // Check if there are any GET parameters to deal with.
                 if($_GET){
+                  // Check if the API key is there.
+                  if(!$_GET['api_key']){
+                    $this->model->validate('api_key');
+                  }
                   // Loop through all the $_GET parameters and check there are no invalid values.
                   foreach($_GET as $getk => $getv){
                     // Check for keys that aren't expected.

@@ -112,8 +112,8 @@ class FundraisersModel extends Model{
         case 'account':
           switch($key){
 
-            // Validation for surname.
-            case 'resouceId':
+            // Validation for resourceId.
+            case 'resourceId':
               if(!$data || empty($data)){
                 $error = '001.02.009';
               }

@@ -114,8 +114,8 @@ class FundraisersModel extends Model{
 
             // Validation for url.
             case 'url':
-              if(!$data || empty($data)){
-                $error = '001.02.009';
+              if((!$data || empty($data)) || (strlen($data) > 45 || strlen($data) < 3)){
+                $error = '001.00.002';
               }
               break;
 

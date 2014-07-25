@@ -48,6 +48,9 @@ class FundraisersController extends Controller{
                     'required' => true,
                   )
                 );
+                // Say what fields we are expecitng to return.
+                $expected_return = array('fundraiserName', 'title', 'forename', 'surname', 'resourceId', 'personalUrl, fundraisingURI');
+
                 // Setup an empty array to output.
                 $return_data = array();
 
@@ -76,15 +79,13 @@ class FundraisersController extends Controller{
                     if(in_array($search, $compare) ||
                       (strtoupper($record['surname']) == strtoupper($_GET['surname']) && stristr($record['forename'], $_GET['forename'])) ||
                       (strtoupper($record['forename']) == strtoupper($_GET['forename']) && stristr($record['surname'], $_GET['surname']))){
-                      $return_data = array(
-                        'fundraiserName' => "{$record['title']} {$record['forename']} {$record['surname']}",
-                        'title' => $record['title'],
-                        'forname' => $record['forename'],
-                        'surname' => $record['surname'],
-                        'resourceId' => $record['resourceId'],
-                        'personalUrl' => $record['personalUrl'],
-                        'fundraiserURI' => $record['fundraiserURI']
-                      );
+
+                      // Return the expected fields from the record.
+                      foreach($expected_return as $field){
+                        $return_data[$field] = $record[$field];
+                      }
+                      // Break out the loop.
+                      break;
                     } else {
                       $this->model->setError('001.02.011');
                       $return_data = $this->model->errors;
@@ -109,13 +110,13 @@ class FundraisersController extends Controller{
                     'required' => true,
                   )
                 );
+                // Say what fields we are expecitng to return.
+                $expected_return = array('fundraiserName', 'title', 'forename', 'surname', 'resourceId', 'personalUrl, fundraisingURI', 'pageSummary');
                 // Setup an empty array to output.
                 $return_data = array();
 
                 // Check if there are any GET parameters to deal with.
                 if($_GET){
-                  // Validate if we have the criteria.
-                  $this->model->validate('criteria', $_GET);
                   // Loop through all the $_GET parameters and check there are no invalid values.
                   foreach($_GET as $getk => $getv){
                     // Check for keys that aren't expected.
@@ -131,18 +132,20 @@ class FundraisersController extends Controller{
 
                 // If we haven't errored out yet, this is the last thing to do.
                 if(empty($this->model->errors)){
-                  // Return a well formed array, as expected by the call.
-                  $return_data = array(
-                    'fundraiserName' => "{$_GET['forename']} {$_GET['surname']}",
-                    'title' => 'Mr/Mrs/Ms/Miss',
-                    'forname' => $_GET['forename'],
-                    'surname' => $_GET['surname'],
-                    'resourceId' => "6397a698-b702-11e2-aba0-00237d9ded4e",
-                    'personalUrl' => NULL,
-                    'fundraisingURI' => "https://api.virginmoneygiving.com/fundraisers/v1/account/6397a698-b702-11e2-aba0-00237d9ded4e"
-                  );
+                  foreach($this->model->data as $record){
+                    if($record['resourceId'] == $_GET['resourceId']){
+                      // Return the expected fields from the record.
+                      foreach($expected_return as $field){
+                        $return_data[$field] = $record[$field];
+                      }
+                      // Break out the loop.
+                      break;
+                    } else {
+                      $this->model->setError('001.02.011');
+                      $return_data = $this->model->errors;
+                    }
+                  }
                 } else {
-                  // Return only the errors.
                   $return_data = $this->model->errors;
                 }
                 $this->outputJson($return_data);

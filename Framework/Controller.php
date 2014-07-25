@@ -7,6 +7,7 @@ require_once('Model.php');
  * Parent controller that provides functions to children.
  *
  * @package: Framework
+ * @category: Controller
  * @author: Kris Pomphrey <kris@krispomphrey.co.uk>
  */
 class Controller{

@@ -3,7 +3,8 @@
  * Fundraisers end point controller.
  * The controller to route to the end points for fundraisers.
  *
- * @package: Framework\Controller
+ * @package: Framework
+ * @category: Controller
  * @author: Kris Pomphrey <kris@krispomphrey.co.uk>
  */
 class FundraisersController extends Controller{

@@ -3,7 +3,8 @@
  * Error Codes Model.
  * Model gets the error codes.
  *
- * @package:  Framework\Model
+ * @package:  Framework
+ * @category: Model
  * @author: Kris Pomphrey <kris@krispomphrey.co.uk>
  */
 class ErrorModel extends Model{

@@ -3,7 +3,8 @@
  * Fundraisers end point model.
  * Model holds the validation rules for fundraisers end point.
  *
- * @package: Framework\Model
+ * @package: Framework
+ * @category: Model
  * @author: Kris Pomphrey <kris@krispomphrey.co.uk>
  */
 class FundraisersModel extends Model{

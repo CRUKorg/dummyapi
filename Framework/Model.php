@@ -3,7 +3,8 @@
  * Overall Model
  * The parent model for the app.
  *
- * @package: Framework\Model
+ * @package: Framework
+ * @category: Model
  * @author: Kris Pomphrey <kris@krispomphrey.co.uk>
  */
 class Model{

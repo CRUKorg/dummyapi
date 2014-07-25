@@ -7,10 +7,10 @@ require_once('Model.php');
  * Parent controller that provides functions to children.
  *
  * @package: Framework
+ * @category: Controller
  * @author: Kris Pomphrey <kris@krispomphrey.co.uk>
  */
 class Controller{
-  // Define all of the variables that the children will need.
   /**
   * Variable that will hold other the current controllers model object.
   * @var object
@@ -124,7 +124,7 @@ class Controller{
 	public function model($model){
 		include_once(MODEL_ROOT."{$model}.php");
 		$model = $model.'Model';
-		$this->model = new $model($this->db, $this->router, $this->user);
+		$this->model = new $model($this->router);
 	}
 
   /**

@@ -1,0 +1,19 @@
+[{
+  "fundraiserName": "Mr John Smith",
+  "title": "Mr",
+  "forename": "John",
+  "surname": "Smith",
+  "resourceId": "6397a698-b702-11e2-aba0-00237d9ded4e",
+  "personalUrl": "http://uk.virginmoneygiving.com/MyNewWebAddress",
+  "fundraiserURI": "https://api.virginmoneygiving.com/fundraisers/v1/account/6397a698-b702-11e2-aba0-00237d9ded4e",
+  "pageSummary": [{
+      "pageName": "John Smith's fundraising page",
+      "pageUrl": "https://api.virginmoneygiving.com/fundraisers/v1/account/6397a698-b702-11e2-aba0-00237d9ded4e/pages/3",
+      "pageClosedIndicator": "N",
+      "teamPage": true,
+      "teamName": null,
+      "pageImageSmall": "http://uk.virginmoneygiving.com/resources/fundraiser-images/74x926397a698-b702-11e2-aba0-00237d9ded4e.jpg",
+      "pageImageMedium": "http://uk.virginmoneygiving.com/resources/fundraiser-images/100x1006397a698-b702-11e2-aba0-00237d9ded4e.jpg",
+      "pageImageLarge": "http://uk.virginmoneygiving.com/resources/fundraiser-images/167x1876397a698-b702-11e2-aba0-00237d9ded4e.jpg"
+  }]
+}]

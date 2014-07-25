@@ -38,15 +38,9 @@ class FundraisersController extends Controller{
               case 'search' :
                 // Setup some expected parameters.
                 $expected_array = array(
-                  'surname' => array(
-                    'required' => true,
-                  ),
-                  'forename' => array(
-                    'required' => true,
-                  ),
-                  'api_key' => array(
-                    'required' => true,
-                  )
+                  'surname' => array('required' => true),
+                  'forename' => array('required' => true),
+                  'api_key' => array('required' => true)
                 );
                 // Say what fields we are expecitng to return.
                 $expected_return = array('fundraiserName', 'title', 'forename', 'surname', 'resourceId', 'personalUrl, fundraisingURI');
@@ -91,7 +85,7 @@ class FundraisersController extends Controller{
                       // Break out the loop.
                       break;
                     } else {
-                      $this->model->setError('001.02.011');
+                      $this->model->set_error('001.02.011');
                       $return_data = $this->model->errors;
                     }
                   }
@@ -107,12 +101,8 @@ class FundraisersController extends Controller{
               case 'account' :
                 // Setup some expected parameters.
                 $expected_array = array(
-                  'resourceId' => array(
-                    'required' => true,
-                  ),
-                  'api_key' => array(
-                    'required' => true,
-                  )
+                  'resourceId' => array('required' => true),
+                  'api_key' => array('required' => true)
                 );
                 // Say what fields we are expecitng to return.
                 $expected_return = array('fundraiserName', 'title', 'forename', 'surname', 'resourceId', 'personalUrl, fundraisingURI', 'pageSummary');
@@ -149,8 +139,74 @@ class FundraisersController extends Controller{
                       // Break out the loop.
                       break;
                     } else {
-                      $this->model->setError('001.02.011');
+                      $this->model->set_error('001.02.011');
                       $return_data = $this->model->errors;
+                    }
+                  }
+                } else {
+                  $return_data = $this->model->errors;
+                }
+                $this->outputJson($return_data);
+                break;
+
+              /**
+               * Case holds logic for endpoint: fundraisers/v1/urls
+               */
+              case 'urls' :
+                // Setup some expected parameters.
+                $expected_array = array(
+                  'url' => array('required' => true),
+                  'api_key' => array('required' => true)
+                );
+                // Check if there is a 'teams';
+                if($this->router->action[3]){
+                  // Concatanate the teams for the model.
+                  $this->model->area .= "/{$this->router->action[3]}";
+                }
+                // Setup an empty array to output.
+                $return_data = array();
+
+                // Check if there are any GET parameters to deal with.
+                if($_GET){
+                  // Check if the API key is there.
+                  if(!$_GET['api_key']){
+                    $this->model->validate('api_key');
+                  }
+                  // Loop through all the $_GET parameters and check there are no invalid values.
+                  foreach($_GET as $getk => $getv){
+                    // Check for keys that aren't expected.
+                    if(!in_array($getk, array_keys($expected_array))){
+                      // Run it through the validate to get the error message.
+                      $this->model->validate($getk, $getv);
+                    } elseif($expected_array[$getk]['required']){
+                      // Only validate if the expected array element is required.
+                      $this->model->validate($getk, $getv);
+                    }
+                  }
+                }
+
+                // If we haven't errored out yet, this is the last thing to do.
+                if(empty($this->model->errors)){
+                  $ftr = ($this->model->area == 'urls') ? 'single' : 'teams';
+                  $records = array_pop($this->model->data);
+                  foreach($records[$ftr] as $record){
+                    if(strtoupper($record) == strtoupper($_GET['url'])){
+                      // Return the expected fields from the record.
+                      $this->model->set_error('001.00.010');
+                      for($c = 1; $c < 7; $c++){
+                        $this->model->errors['errors'][count($this->model->errors)-1]['messageDetails'][] = "{$_GET['url']}{$c}";
+                      }
+                      $return_data = $this->model->errors;
+                      // Break out the loop.
+                      break;
+                    } else {
+                      $return_data = array(
+                        'requestedUrl' => $_GET['url'],
+                        'urlType' => "fundraiser",
+                        'available' => true,
+                        'message' => null,
+                        'alternateUrlList' => array()
+                      );
                     }
                   }
                 } else {

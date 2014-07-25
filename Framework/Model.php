@@ -59,4 +59,36 @@ class Model{
 			}
 		}
 	}
+
+  /**
+   * Implements read_file();
+   *
+   * Function that will read dummy content.
+   */
+  public function read_file($path){
+    if(file_exists($path)){
+      $file = file_get_contents($path);
+      $this->data = json_decode($file, true);
+    } else return 'Dummy Records not found!';
+  }
+
+  /**
+   * Implements set_error();
+   *
+   * Function that will set error message to output.
+   */
+  public function set_error($code, $replace = null){
+    if($replace){
+      // Replace the tokens with the correct data.
+      $message = str_replace($replace[0], $replace[1], $this->Error->errors[$code]['Explanation']);
+    } else {
+      $message = $this->Error->errors[$code]['Explanation'];
+    }
+    // Set the error code and messages as determined above.
+    $this->errors['errors'][] = array(
+      'errorCode' => $code,
+      'errorMessage' => $message
+    );
+    return false;
+  }
 }

@@ -34,10 +34,7 @@ class FundraisersModel extends Model{
   public function init(){
     // Pull in some dummy records into the data.
     $dummy_content = DIR_ROOT . '/Config/DummyFundraiserRecords.json';
-    if(file_exists($dummy_content)){
-      $file = file_get_contents($dummy_content);
-      $this->data = json_decode($file, true);
-    } else return 'Dummy Records not found!';
+    $this->read_file($dummy_content);
   }
 
   /**
@@ -106,14 +103,17 @@ class FundraisersModel extends Model{
           }
           break;
 
-          /**
+        /**
          * Fundraiser details API validation rules.
          */
-        case 'account':
+        case 'urls/teams':
+        case 'urls':
+          // Change the dummy content being pulled in.
+          $this->read_file(DIR_ROOT . "/Config/DummyUrlsTaken.json");
           switch($key){
 
-            // Validation for resourceId.
-            case 'resourceId':
+            // Validation for url.
+            case 'url':
               if(!$data || empty($data)){
                 $error = '001.02.009';
               }
@@ -136,24 +136,9 @@ class FundraisersModel extends Model{
 
     // If an error code exists.
     if($error){
-      return $this->setError($error, $replace);
+      return $this->set_error($error, $replace);
     } else {
       return true;
     }
-  }
-
-  public function setError($code, $replace = null){
-    if($replace){
-      // Replace the tokens with the correct data.
-      $message = str_replace($replace[0], $replace[1], $this->Error->errors[$code]['Explanation']);
-    } else {
-      $message = $this->Error->errors[$code]['Explanation'];
-    }
-    // Set the error code and messages as determined above.
-    $this->errors[] = array(
-      'errorCode' => $code,
-      'errorMessage' => $message
-    );
-    return false;
   }
 }

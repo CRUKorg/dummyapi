@@ -49,7 +49,7 @@ class FundraisersController extends Controller{
               unset($_GET['api_key']);
             }
 
-            // Remove the .json (we don't need it in teh dummy API).
+            // Tell the model what rules to look at.
             $this->model->area = $this->router->action[2];
 
             /**

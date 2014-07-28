@@ -1,5 +1,2 @@
-[{
-  "single": ["test", "tester", "validated-url", "url-taken"],
-  "teams": ["taken-team", "test-team", "team-name"]
-}]
+["test", "tester", "validated-url", "url-taken", "taken-team", "test-team", "team-name"]
 

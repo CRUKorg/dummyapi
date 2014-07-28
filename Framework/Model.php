@@ -65,10 +65,14 @@ class Model{
    *
    * Function that will read dummy content.
    */
-  public function read_file($path){
+  public function read_file($path, $return = false){
     if(file_exists($path)){
       $file = file_get_contents($path);
-      $this->data = json_decode($file, true);
+      if($return) {
+        return json_decode($file, true);
+      } else {
+        $this->data = json_decode($file, true);
+      }
     } else return 'Dummy Records not found!';
   }
 
@@ -77,7 +81,7 @@ class Model{
    *
    * Function that will set error message to output.
    */
-  public function set_error($code, $replace = null){
+  public function set_error($code, $replace = null, $extra = null){
     if($replace){
       // Replace the tokens with the correct data.
       $message = str_replace($replace[0], $replace[1], $this->Error->errors[$code]['Explanation']);
@@ -89,6 +93,13 @@ class Model{
       'errorCode' => $code,
       'errorMessage' => $message
     );
+
+    // Add extra stuff to the error message.
+    if($extra){
+      foreach($extra as $exk => $exv){
+        $this->errors['errors'][count($this->errors['errors'])-1][$exk] = $exv;
+      }
+    }
 
     // Remove any duplicates from the array for cleaner output.
     $this->errors['errors'] = array_map('unserialize', array_unique(array_map('serialize', $this->errors['errors'])));

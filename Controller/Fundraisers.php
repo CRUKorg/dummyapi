@@ -17,6 +17,11 @@ class FundraisersController extends Controller{
     // Get all the request headers for this request.
     $request_headers = getallheaders();
     $this->model('Fundraisers');
+
+    // Setup an empty array to output.
+    $return_data = array();
+    $expected_return = array();
+
     // Check to see if there is a version number.
     if(isset($this->router->action[1])){
       // Switch to determine which version to pull through.
@@ -59,9 +64,6 @@ class FundraisersController extends Controller{
                 );
                 // Say what fields we are expecitng to return.
                 $expected_return = array('fundraiserName', 'title', 'forename', 'surname', 'resourceId', 'personalUrl, fundraisingURI');
-
-                // Setup an empty array to output.
-                $return_data = array();
 
                 // Check if there are any GET parameters to deal with.
                 if($_GET){
@@ -119,8 +121,6 @@ class FundraisersController extends Controller{
                 );
                 // Say what fields we are expecitng to return.
                 $expected_return = array('fundraiserName', 'title', 'forename', 'surname', 'resourceId', 'personalUrl, fundraisingURI', 'pageSummary');
-                // Setup an empty array to output.
-                $return_data = array();
 
                 // Check if there are any GET parameters to deal with.
                 if($_GET){
@@ -181,8 +181,6 @@ class FundraisersController extends Controller{
                 } else {
                   $this->model->set_error('001.00.002');
                 }
-                // Setup an empty array to output.
-                $return_data = array();
 
                 // Check the url passed through.
                 $this->model->validate('url', $url_to_validate);
@@ -229,9 +227,6 @@ class FundraisersController extends Controller{
                   'fundraiserCustomCode' => array('required' => false),
                   'charityResourceId' => array('required' => false),
                 );
-
-                // Setup an empty array to output.
-                $return_data = array();
 
                 if($_POST){
                   if(empty($_POST)){

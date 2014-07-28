@@ -48,6 +48,9 @@ class FundraisersModel extends Model{
     // Set up variable to hold error code.
     $error = null;
     $replace = null;
+    $extra = null;
+
+    $api_keys = $this->read_file(DIR_ROOT . '/Config/DummyApiKeys.json', true);
 
     // Make sure the controller has set what are we are in.  This should be automatic.
     if($this->area){
@@ -65,7 +68,7 @@ class FundraisersModel extends Model{
 
             // Validation for surname.
             case 'surname':
-              if(strlen($data) < 3 && !empty($data)){
+              if(!empty($data) && strlen($data) < 3){
                 $error = '001.02.010';
                 $replace = array(
                   array('{{field}}'),
@@ -76,7 +79,7 @@ class FundraisersModel extends Model{
 
             // Validation for forename.
             case 'forename':
-              if(strlen($data) < 3 && !empty($data)){
+              if(!empty($data) && strlen($data) < 3){
                 $error = '001.02.010';
                 $replace = array(
                   array('{{field}}'),
@@ -92,16 +95,13 @@ class FundraisersModel extends Model{
               }
               break;
 
-            // Validation to see if api_key is there.
-            case 'api_key':
-              if(!$data || empty($data)) {
-                $error = '000.00.000';
-              }
-              break;
-
             // When no custom rules, invalid value.
             default:
               $error = '001.00.001';
+              $replace = array(
+                array('{{field}}'),
+                array($key)
+              );
           }
           break;
 
@@ -110,27 +110,219 @@ class FundraisersModel extends Model{
          */
         case 'urls/teams':
         case 'urls':
-          // Change the dummy content being pulled in.
-          $this->read_file(DIR_ROOT . "/Config/DummyUrlsTaken.json");
-          switch($key){
+          // Pull in some dummy fake URLs that will be merged with users urls.
+          $urls = $this->read_file(DIR_ROOT . "/Config/DummyUrlsTaken.json", true);
+          foreach($this->data as $record){
+            if($record['personalUrl'] && !empty($record['personalUrl'])){
+              $urls[] = $record['personalUrl'];
+            }
+          }
 
+          switch($key){
             // Validation for url.
             case 'url':
               if((!$data || empty($data)) || (strlen($data) > 45 || strlen($data) < 3)){
                 $error = '001.00.002';
-              }
-              break;
-
-            // Validation to see if api_key is there.
-            case 'api_key':
-              if(!$data || empty($data)) {
-                $error = '000.00.000';
+              } elseif(in_array($data, $urls)){
+                $error = '001.00.010';
+                for($c = 1; $c < 6; $c++){
+                  $extra['messageDetails'][] = $data.$c;
+                }
               }
               break;
 
             // When no custom rules, invalid value.
             default:
               $error = '001.00.001';
+              $replace = array(
+                array('{{field}}'),
+                array($key)
+              );
+          }
+          break;
+
+        /**
+         * Fundraiser API create account validation rules.
+         */
+        case 'newaccount':
+          switch($key){
+
+            // Validation for url.
+            case 'countryCode':
+              $codes = array();
+              foreach($this->Countries->data['countries'] as $country){
+                $codes[] = $country['countryCode'];
+              }
+              if(!in_array($data, $codes)){
+                $error = '002.01.03';
+              }
+              break;
+
+            // Validation for title.
+            case 'title':
+              $accepted_titles = array('Mr', 'Mrs', 'Ms', 'Miss', 'Dr', 'Prof');
+              if(!$data || empty($data) || !in_array($data, $accepted_titles)){
+                $error = '002.01.04';
+              }
+              break;
+
+            // Validation for personalUrl
+            case 'personalUrl':
+              // @todo Loop back and validate URL.
+              break;
+
+            // Validation for surname.
+            case 'surname':
+              if(!$data || empty($data) || strlen($data) > 50){
+                $error = '002.01.06';
+              }
+              break;
+
+            // Validation for forename.
+            case 'forename':
+              if(!$data || empty($data) || strlen($data) > 50){
+                $error = '002.01.07';
+              }
+              break;
+
+            // Validation for terms and conditions.
+            case 'termsAndConditionsAccepted':
+              if(!$data || empty($data) || strtoupper($data) != 'Y'){
+                $error = '002.01.08';
+              }
+              break;
+
+            // Validation for email address.
+            case 'emailAddress':
+              if(!$data || empty($data) || $data > 255){
+                $error = '002.01.09';
+              }
+              // Email regex.  This is in by no means perfect, but will work.
+              $email_regx = "~^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}\~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$~";
+              if(!$data || empty($data) || !preg_match($email_regx, $data)){
+                $error = '002.01.10';
+              }
+              break;
+
+            // Validation for telephone.
+            case 'preferredTelephone':
+              // Check to see if the string passed is numeric (without letters).
+              if(is_numeric($data)){
+                if(!$data || empty($data)){
+                  $error = '002.01.11';
+                } elseif(strlen($data) > 16){
+                  $error = '002.01.12';
+                }
+              } else {
+                $error = '002.01.12';
+              }
+              break;
+
+            // Validation for date of birth.
+            case 'dateOfBirth':
+              $dob_regx = "/^[0-9]{4}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$/";
+              if(!$data || empty($data)){
+                $error = '002.01.13';
+              } elseif(!preg_match($dob_regx, $data)){
+                $error = '002.01.14';
+              } else {
+                // Check the age is between 13 and 100.
+                $from = new DateTime($data);
+                $to = new DateTime('today');
+                if($from->diff($to)->y < 13 || $from->diff($to)->y > 100){
+                  $error = '002.01.15';
+                }
+              }
+              break;
+
+            // Validation for postcode.
+            case 'postcode':
+              $postcode_regex = "/^(GIR ?0AA|[A-PR-UWYZ]([0-9]{1,2}|([A-HK-Y][0-9]([0-9ABEHMNPRV-Y])?)|[0-9][A-HJKPS-UW]) ?[0-9][ABD-HJLNP-UW-Z]{2})$/";
+              if(strlen($data) > 8){
+                $error = '002.01.16';
+              } elseif(!preg_match($postcode_regex, strtoupper($data))) {
+                $error = '002.01.17';
+              }
+              break;
+
+            // Validation for addressLine1 / townCity.
+            case 'addressLine1/townCity':
+              if((!$data['addressLine1'] || empty($data['addressLine1'])) || (!$data['townCity'] || empty($data['townCity']))){
+                $error = '002.01.19';
+              }
+              break;
+
+            // Validation for addressLine1 / townCity.
+            case 'customCodes':
+              if(!is_array($data) || count($data) < 5){
+                $error = '002.01.22';
+              } elseif(count($data) > 5){
+                $error = '002.01.23';
+              }
+              break;
+
+            // Validation for emailAddress / dateOfBirth.
+            case 'emailAddress/dateOfBirth':
+              foreach($this->data as $record){
+                // Check that the new account isn't already in the records.
+                if(($record['emailAddress'] === $data['emailAddress']) && ($record['dateOfBirth'] === $data['dateOfBirth'])){
+                  $error = '002.01.31';
+                }
+              }
+              break;
+
+            // Validation for address fields to make sure they are not empty.
+            case 'addressLine1':
+            case 'addressLine2':
+            case 'townCity':
+            case 'countyState':
+              if(!$data || empty($data)){
+                $error = '001.00.001';
+                $replace = array(
+                  array('{{field}}'),
+                  array($key)
+                );
+              }
+              break;
+
+            // Validation for general Y/N questions.
+            case 'charityMarketingIndicator':
+            case 'allCharityMarketingIndicator':
+            case 'virginMarketingIndicator':
+            case 'vmgMarketingIndicator':
+              if(!$data || empty($data) || !in_array(strtoupper($data), array('Y', 'N'))){
+                $error = '001.00.001';
+                $replace = array(
+                  array('{{field}}'),
+                  array($key)
+                );
+              }
+              break;
+
+            // Validation for resourceID
+            case 'charityResourceId':
+              if(!$data || empty($data)){
+                $error = '001.01.004';
+              }
+              break;
+
+            // When no custom rules, invalid value.
+            default:
+              $error = '001.00.001';
+              $replace = array(
+                array('{{field}}'),
+                array($key)
+              );
+          }
+          break;
+      }
+    } else {
+      // Setup some validation rules outside of an area, such as the api key.
+      switch($key) {
+        // Validation to see if api_key is there.
+        case 'api_key':
+          if(!$data || empty($data) || !in_array($data, $api_keys)) {
+            $error = '000.00.000';
           }
           break;
       }
@@ -138,7 +330,7 @@ class FundraisersModel extends Model{
 
     // If an error code exists.
     if($error){
-      return $this->set_error($error, $replace);
+      return $this->set_error($error, $replace, $extra);
     } else {
       return true;
     }

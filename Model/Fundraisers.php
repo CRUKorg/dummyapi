@@ -1,7 +1,8 @@
 <?php
 /**
  * Fundraisers end point model.
- * Model holds the validation rules for fundraisers end point.
+ * Model holds the data (dummy data) and
+ * validation rules for fundraisers end point.
  *
  * @package: Framework
  * @category: Model
@@ -12,7 +13,7 @@ class FundraisersModel extends Model{
   * Variable that will hold the DB connection.
   * @var array
   */
-  public $models = array('Error');
+  public $models = array('Error', 'Countries');
 
   /**
   * Variable that holds the api area being called.
@@ -46,6 +47,7 @@ class FundraisersModel extends Model{
   public function validate($key, $data){
     // Set up variable to hold error code.
     $error = null;
+    $replace = null;
 
     // Make sure the controller has set what are we are in.  This should be automatic.
     if($this->area){
@@ -93,7 +95,7 @@ class FundraisersModel extends Model{
             // Validation to see if api_key is there.
             case 'api_key':
               if(!$data || empty($data)) {
-                $error = '001.00.004';
+                $error = '000.00.000';
               }
               break;
 
@@ -122,7 +124,7 @@ class FundraisersModel extends Model{
             // Validation to see if api_key is there.
             case 'api_key':
               if(!$data || empty($data)) {
-                $error = '001.00.004';
+                $error = '000.00.000';
               }
               break;
 

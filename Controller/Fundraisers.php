@@ -25,12 +25,20 @@ class FundraisersController extends Controller{
          */
         case 'v1' :
           if(isset($this->router->action[2])){
-            $this->model->area = $this->router->action[2];
+            // Check if the API key is there.
+            if($_GET && isset($_GET['api_key'])){
+              $this->model->validate('api_key', $_GET['api_key']);
+            } else {
+              $this->model->set_error('000.00.000');
+            }
+
+            // Remove the .json (we don't need it in teh dummy API).
+            $this->model->area = str_replace('.json', '', $this->router->action[2]);
 
             /**
              * Switch case for Fundraiser Action (v1).
              */
-            switch ($this->router->action[2]){
+            switch ($this->model->area){
 
               /**
                * Case holds logic for endpoint: fundraisers/v1/search
@@ -50,10 +58,6 @@ class FundraisersController extends Controller{
 
                 // Check if there are any GET parameters to deal with.
                 if($_GET){
-                  // Check if the API key is there.
-                  if(!$_GET['api_key']){
-                    $this->model->validate('api_key');
-                  }
                   // Validate if we have the criteria.
                   $this->model->validate('criteria', $_GET);
                   // Loop through all the $_GET parameters and check there are no invalid values.
@@ -111,10 +115,6 @@ class FundraisersController extends Controller{
 
                 // Check if there are any GET parameters to deal with.
                 if($_GET){
-                  // Check if the API key is there.
-                  if(!$_GET['api_key']){
-                    $this->model->validate('api_key');
-                  }
                   // Loop through all the $_GET parameters and check there are no invalid values.
                   foreach($_GET as $getk => $getv){
                     // Check for keys that aren't expected.
@@ -150,7 +150,9 @@ class FundraisersController extends Controller{
                 break;
 
               /**
-               * Case holds logic for endpoint: fundraisers/v1/urls
+               * Case holds logic for endpoints:
+               * - fundraisers/v1/urls
+               * - fundraisers/v1/urls/teams
                */
               case 'urls' :
                 // Setup some expected parameters.
@@ -161,17 +163,14 @@ class FundraisersController extends Controller{
                 // Check if there is a 'teams';
                 if($this->router->action[3]){
                   // Concatanate the teams for the model.
-                  $this->model->area .= "/{$this->router->action[3]}";
+                  $this->model->area .= "/". str_replace('.json', '', $this->router->action[3]);
                 }
                 // Setup an empty array to output.
                 $return_data = array();
 
                 // Check if there are any GET parameters to deal with.
                 if($_GET){
-                  // Check if the API key is there.
-                  if(!$_GET['api_key']){
-                    $this->model->validate('api_key');
-                  }
+
                   // Loop through all the $_GET parameters and check there are no invalid values.
                   foreach($_GET as $getk => $getv){
                     // Check for keys that aren't expected.

@@ -89,6 +89,9 @@ class Model{
       'errorCode' => $code,
       'errorMessage' => $message
     );
+
+    // Remove any duplicates from the array for cleaner output.
+    $this->errors['errors'] = array_map('unserialize', array_unique(array_map('serialize', $this->errors['errors'])));
     return false;
   }
 }

@@ -22,6 +22,10 @@ class FundraisersController extends Controller{
     $return_data = array();
     $expected_return = array();
 
+    foreach($this->router->action as $rk => $rv){
+      $this->router->action[$rk] = str_replace('.json', '', $rv);
+    }
+
     // Check to see if there is a version number.
     if(isset($this->router->action[1])){
       // Switch to determine which version to pull through.
@@ -46,7 +50,7 @@ class FundraisersController extends Controller{
             }
 
             // Remove the .json (we don't need it in teh dummy API).
-            $this->model->area = str_replace('.json', '', $this->router->action[2]);
+            $this->model->area = $this->router->action[2];
 
             /**
              * Switch case for Fundraiser Action (v1).
@@ -177,7 +181,7 @@ class FundraisersController extends Controller{
                   } else {
                     $c = 3;
                   }
-                  $url_to_validate = str_replace('.json', '', $this->router->action[$c]);
+                  $url_to_validate = $this->router->action[$c];
                 } else {
                   $this->model->set_error('001.00.002');
                 }

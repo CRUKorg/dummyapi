@@ -50,7 +50,7 @@ class FundraisersModel extends Model{
     $replace = null;
     $extra = null;
 
-    $api_keys = $this->read_file(MODEL_ROOT . 'ApiKeys.json', true);
+    $api_keys = $this->read_file(MODEL_ROOT . 'data/ApiKeys.json', true);
 
     // Make sure the controller has set what are we are in.  This should be automatic.
     if($this->area){

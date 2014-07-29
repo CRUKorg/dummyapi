@@ -15,6 +15,20 @@ class FundraisersController extends Controller{
    */
   public function init(){
     $this->model('Fundraisers');
+
+    // Get all the request headers for this request.
+    $request_headers = getallheaders();
+
+    // Setup an empty array to output.
+    $return_data = array();
+    $expected_return = array();
+
+    // Remove all the .json from actions.
+    foreach($this->router->action as $rk => $rv){
+      $this->router->action[$rk] = str_replace(array('.json', '.xml'), '', $rv);
+    }
+
+
     // Check to see if there is a version number.
     if(isset($this->router->action[1])){
       // Switch to determine which version to pull through.
@@ -25,12 +39,26 @@ class FundraisersController extends Controller{
          */
         case 'v1' :
           if(isset($this->router->action[2])){
+            // Check if the API key is there.
+            if($_GET && !empty($_GET['api_key'])){
+              $this->model->validate('api_key', $_GET['api_key']);
+            } else {
+              $this->model->set_error('000.00.003');
+            }
+            if(!empty($this->model->errors)){
+              $this->output_json($this->model->errors);
+              die();
+            } else {
+              unset($_GET['api_key']);
+            }
+
+            // Tell the model what rules to look at.
             $this->model->area = $this->router->action[2];
 
             /**
              * Switch case for Fundraiser Action (v1).
              */
-            switch ($this->router->action[2]){
+            switch ($this->model->area){
 
               /**
                * Case holds logic for endpoint: fundraisers/v1/search
@@ -38,18 +66,11 @@ class FundraisersController extends Controller{
               case 'search' :
                 // Setup some expected parameters.
                 $expected_array = array(
-                  'surname' => array(
-                    'required' => true,
-                  ),
-                  'forename' => array(
-                    'required' => true,
-                  ),
-                  'api_key' => array(
-                    'required' => true,
-                  )
+                  'surname' => array('required' => true),
+                  'forename' => array('required' => true)
                 );
-                // Setup an empty array to output.
-                $return_data = array();
+                // Say what fields we are expecitng to return.
+                $expected_return = array('fundraiserName', 'title', 'forename', 'surname', 'resourceId', 'personalUrl, fundraisingURI');
 
                 // Check if there are any GET parameters to deal with.
                 if($_GET){
@@ -61,9 +82,12 @@ class FundraisersController extends Controller{
                     if(!in_array($getk, array_keys($expected_array))){
                       // Run it through the validate to get the error message.
                       $this->model->validate($getk, $getv);
-                    } elseif($expected_array[$getk]['required']){
-                      // Only validate if the expected array element is required.
-                      $this->model->validate($getk, $getv);
+                    }
+                  }
+                  foreach($expected_array as $expk => $expv) {
+                    // Only validate if the expected array element is required.
+                    if($expv['required']) {
+                      $this->model->validate($expk, $_GET[$expk]);
                     }
                   }
                 }
@@ -76,76 +100,283 @@ class FundraisersController extends Controller{
                     if(in_array($search, $compare) ||
                       (strtoupper($record['surname']) == strtoupper($_GET['surname']) && stristr($record['forename'], $_GET['forename'])) ||
                       (strtoupper($record['forename']) == strtoupper($_GET['forename']) && stristr($record['surname'], $_GET['surname']))){
-                      $return_data = array(
-                        'fundraiserName' => "{$record['title']} {$record['forename']} {$record['surname']}",
-                        'title' => $record['title'],
-                        'forname' => $record['forename'],
-                        'surname' => $record['surname'],
-                        'resourceId' => $record['resourceId'],
-                        'personalUrl' => $record['personalUrl'],
-                        'fundraiserURI' => $record['fundraiserURI']
-                      );
+
+                      // Return the expected fields from the record.
+                      foreach($expected_return as $field){
+                        $return_data[$field] = $record[$field];
+                      }
+                      // Break out the loop.
+                      break;
                     } else {
-                      $this->model->setError('001.02.011');
+                      $this->model->set_error('001.02.011');
                       $return_data = $this->model->errors;
                     }
                   }
                 } else {
                   $return_data = $this->model->errors;
                 }
-                $this->outputJson($return_data);
+                $this->output_json($return_data);
                 break;
 
               /**
                * Case holds logic for endpoint: fundraisers/v1/account
                */
               case 'account' :
+                /**
+                 * Secure account stuff happens here.
+                 */
+                if(isset($this->router->action[3]) && $this->router->action[3] == 'secure'){
+                  $fundraiser = $this->router->action[4];
+                  $this->model->area .= "/{$this->router->action[3]}/{$this->router->action[5]}";
+
+                  /**
+                   * Switch for secure elements of the account.
+                   */
+                  switch($this->router->action[5]){
+
+                    /**
+                     * Case holds logic for endpoint: fundraisers/v1/account/secure/{fundraiserResourceId}/newpage
+                     */
+                    case 'newpage':
+                      $expected_array = array(
+                        'pageTitle' => array('required' => true),
+                        'eventResourceId' => array('required' => false),
+                        'fundraisingDate' => array('required' => false),
+                        'teamPageIndicator' => array('required' => true),
+                        'teamName' => array('required' => false),
+                        'teamUrl' => array('required' => false),
+                        'activityCode' => array('required' => false),
+                        'activityDescription' => array('required' => true),
+                        'charitycontributionIndicator' => array('required' => true),
+                        'postEventFundraisingInterval' => array('required' => true),
+                        'fundraisingTarget' => array('required' => false),
+                        'charitySplits' => array('required' => true),
+                      );
+
+                      $request_body = file_get_contents('php://input');
+
+                      // Check if the request is JSON, otherwise it's a postbody.
+                      if(json_decode($request_body, true)){
+                        $data = json_decode($request_body, true);
+                      } else {
+                        parse_str($request_body, $data);
+                      }
+
+                      if($data){
+                        if(empty($data)){
+                          $this->model->set_error('003.01.04');
+                        }
+                         // Loop through all the $_POST parameters and check there are no invalid values.
+                        foreach($data as $getk => $getv){
+                          // Check for keys that aren't expected.
+                          if(!in_array($getk, array_keys($expected_array))){
+                            // Run it through the validate to get the error message.
+                            $this->model->validate($getk, $getv);
+                          }
+                        }
+                        $this->model->validate('pageTitle', $data['pageTitle']);
+                        if($this->model->validate('teamPageIndicator', $data['teamPageIndicator'])){
+                          if($data['teamPageIndicator'] == 'Y'){
+                            $this->model->validate('teamName', $data['teamName']);
+                            $this->model->validate('teamUrl', $data['teamUrl']);
+                          }
+                        }
+                        if(!$data['eventResourceId'] || empty($data['eventResourceId'])){
+                          $this->model->validate('activityCode', $data['activityCode']);
+                        } else {
+                          $this->model->validate('eventResourceId', array('eventResourceId' => $data['eventResourceId'], 'charitySplits' => $data['charitySplits']));
+                        }
+                        if(($data['activityCode'] || !empty($data['activityCode'])) && $data['activityCode'] == '039'){
+                          $this->model->validate('activityDescription', $data['activityDescription']);
+                        }
+
+                        $this->model->validate('charitycontributionIndicator', $data['charitycontributionIndicator']);
+                        $this->model->validate('postEventFundraisingInterval', $data['postEventFundraisingInterval']);
+
+                        $this->model->validate('charityResourceId', $data['charitySplits']);
+                        $this->model->validate('charitySplits', $data['charitySplits']);
+                      } else{
+                        $this->model->set_error('003.01.04');
+                      }
+
+                      // If we haven't errored out yet, this is the last thing to do.
+                      if(empty($this->model->errors)){
+                        $return_data = array(
+                          'creationSuccessful' => true,
+                          'pageTitle' => $data['pageTitle'],
+                          'pageUrl' => 1,
+                          'pageURI' => "http://{$_SERVER['HTTP_HOST']}/fundraisers/v1/account/{$this->router->action[4]}/page/1"
+                        );
+                      } else {
+                        $return_data = $this->model->errors;
+                      }
+
+                      $this->output_json($return_data);
+                      break;
+
+                  }
+                }
+
+                /**
+                 * The normal account end point.
+                 */
+                else {
+                  // Say what fields we are expecitng to return.
+                  $expected_return = array('fundraiserName', 'title', 'forename', 'surname', 'resourceId', 'personalUrl, fundraisingURI', 'pageSummary');
+
+                  // If we haven't errored out yet, this is the last thing to do.
+                  if(empty($this->model->errors)){
+                    foreach($this->model->data as $record){
+                      if($this->router->action[3] == $record['resourceId']){
+                        // Return the expected fields from the record.
+                        foreach($expected_return as $field){
+                          $return_data[$field] = $record[$field];
+                        }
+                        // Break out the loop.
+                        break;
+                      } else {
+                        $this->model->set_error('001.02.011');
+                        $return_data = $this->model->errors;
+                      }
+                    }
+                  } else {
+                    $return_data = $this->model->errors;
+                  }
+                  $this->output_json($return_data);
+                }
+                break;
+
+              /**
+               * Case holds logic for endpoints:
+               * - fundraisers/v1/urls
+               * - fundraisers/v1/urls/teams
+               */
+              case 'urls' :
+                // Check if there is a 'teams';
+                if($this->router->action[3]){
+                  // If it's teams, we need to shift the action to 4.
+                  if($this->router->action[3] == 'teams'){
+                    // Concatanate the teams for the model.
+                    $this->model->area .= "/teams";
+                    $c = 4;
+                  } else {
+                    $c = 3;
+                  }
+                  $url_to_validate = $this->router->action[$c];
+                } else {
+                  $this->model->set_error('001.00.002');
+                }
+
+                // Check the url passed through.
+                $this->model->validate('url', $url_to_validate);
+
+                // If we haven't errored out yet, this is the last thing to do.
+                if(empty($this->model->errors)){
+                  $return_data = array(
+                    'requestedUrl' => $url_to_validate,
+                    'urlType' => "fundraiser",
+                    'available' => true,
+                    'message' => null,
+                    'alternateUrlList' => array()
+                  );
+                } else {
+                  $return_data = $this->model->errors;
+                }
+                $this->output_json($return_data);
+                break;
+
+              /**
+               * Case holds logic for endpoints: fundraisers/v1/newaccount.json
+               */
+              case 'newaccount' :
                 // Setup some expected parameters.
                 $expected_array = array(
-                  'resourceId' => array(
-                    'required' => true,
-                  ),
-                  'api_key' => array(
-                    'required' => true,
-                  )
+                  'title' => array('required' => true),
+                  'forename' => array('required' => true),
+                  'surname' => array('required' => true),
+                  'addressLine1' => array('required' => true),
+                  'addressLine2' => array('required' => true),
+                  'townCity' => array('required' => true),
+                  'countyState' => array('required' => true),
+                  'postcode' => array('required' => true),
+                  'countryCode' => array('required' => true),
+                  'preferredTelephone' => array('required' => true),
+                  'emailAddress' => array('required' => true),
+                  'personalUrl' => array('required' => true),
+                  'termsAndConditionsAccepted' => array('required' => true),
+                  'charityMarketingIndicator' => array('required' => true),
+                  'allCharityMarketingIndicator' => array('required' => true),
+                  'virginMarketingIndicator' => array('required' => true),
+                  'vmgMarketingIndicator' => array('required' => true),
+                  'dateOfBirth' => array('required' => true),
+                  'fundraiserCustomCode' => array('required' => false),
+                  'charityResourceId' => array('required' => false),
                 );
+
+                $request_body = file_get_contents('php://input');
+
+                // Check if the request is JSON, otherwise it's a postbody.
+                if(json_decode($request_body, true)){
+                  $data = json_decode($request_body, true);
+                } else {
+                  parse_str($request_body, $data);
+                }
+
                 // Setup an empty array to output.
                 $return_data = array();
+                $expected_return = array();
 
-                // Check if there are any GET parameters to deal with.
-                if($_GET){
-                  // Validate if we have the criteria.
-                  $this->model->validate('criteria', $_GET);
-                  // Loop through all the $_GET parameters and check there are no invalid values.
-                  foreach($_GET as $getk => $getv){
+                foreach($this->router->action as $rk => $rv){
+                  $this->router->action[$rk] = str_replace('.json', '', $rv);
+                }
+
+                if($data){
+                  if(!$data || empty($data)){
+                    $this->model->set_error('002.01.02');
+                  }
+                   // Loop through all the $_GET parameters and check there are no invalid values.
+                  foreach($data as $getk => $getv){
                     // Check for keys that aren't expected.
                     if(!in_array($getk, array_keys($expected_array))){
                       // Run it through the validate to get the error message.
                       $this->model->validate($getk, $getv);
-                    } elseif($expected_array[$getk]['required']){
-                      // Only validate if the expected array element is required.
-                      $this->model->validate($getk, $getv);
                     }
                   }
+                  foreach($expected_array as $expk => $expv) {
+                    // Only validate if the expected array element is required.
+                    if($expv['required']) {
+                      $this->model->validate($expk, $data[$expk]);
+                    }
+                  }
+                  $this->model->validate('addressLine1/townCity', array('addressLine1' => $data['addressLine1'], 'townCity' => $data['townCity']));
+                  $this->model->validate('emailAddress/dateOfBirth', array('emailAddress' => $data['emailAddress'], 'dateOfBirth' => $data['dateOfBirth']));
+                  if(isset($data['customCodes'])){
+                    $this->model->validate('customCodes', $data['fundraiserCustomCode']);
+                  }
+                  if(isset($data['charityResourceId'])){
+                    $this->model->validate('charityResourceId', $data['charityResourceId']);
+                  }
+                } else {
+                  $this->model->set_error('002.01.01');
                 }
 
                 // If we haven't errored out yet, this is the last thing to do.
                 if(empty($this->model->errors)){
-                  // Return a well formed array, as expected by the call.
                   $return_data = array(
-                    'fundraiserName' => "{$_GET['forename']} {$_GET['surname']}",
-                    'title' => 'Mr/Mrs/Ms/Miss',
-                    'forname' => $_GET['forename'],
-                    'surname' => $_GET['surname'],
-                    'resourceId' => "6397a698-b702-11e2-aba0-00237d9ded4e",
-                    'personalUrl' => NULL,
-                    'fundraisingURI' => "https://api.virginmoneygiving.com/fundraisers/v1/account/6397a698-b702-11e2-aba0-00237d9ded4e"
+                    'creationSuccessful' => true,
+                    'fundraiserName' => "{$data['title']} {$data['forename']} {$data['surname']}",
+                    'resourceId' => "318fc319-3b19-4314-9c8d-404b14e51eb2",
+                    'personalUrl' => "http://uk.sandbox.virginmoneygiving.com/mytesturl",
+                    'alternateURLs' => null,
+                    'accessToken' => "mdznarvxftjk2p365tyv7zp8",
+                    'responseURI' => "https://sandbox.api.virginmoneygiving.com/fundraisers/v1/account/318fc319-3b19-4314-9c8d-404b14e51eb2",
+                    'customerExists' => false,
+                    'message' => "Token expires in 600 seconds"
                   );
                 } else {
-                  // Return only the errors.
                   $return_data = $this->model->errors;
                 }
-                $this->outputJson($return_data);
+                $this->output_json($return_data);
                 break;
 
             }
@@ -156,11 +387,11 @@ class FundraisersController extends Controller{
   }
 
   /**
-   * Implements outputJson();
+   * Implements output_json();
    *
    * Function to simplify the ouput of the json to the page.
    */
-  private function outputJson($data){
+  private function output_json($data){
     echo json_encode($data);
   }
 }

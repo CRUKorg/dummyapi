@@ -1,0 +1,51 @@
+{
+    "activityTypes": [{
+        "activityCode": "028",
+        "activityDescription": "Adrenalin rush",
+        "reasonCode": "CHALLENGE"
+    }, {
+        "activityCode": "029",
+        "activityDescription": "Cycling",
+        "reasonCode": "CHALLENGE"
+    }, {
+        "activityCode": "030",
+        "activityDescription": "Give up smoking",
+        "reasonCode": "CHALLENGE"
+    }, {
+        "activityCode": "031",
+        "activityDescription": "Grow a beard or moustache",
+        "reasonCode": "CHALLENGE"
+    }, {
+        "activityCode": "032",
+        "activityDescription": "Keep fit",
+        "reasonCode": "CHALLENGE"
+    }, {
+        "activityCode": "033",
+        "activityDescription": "Lose weight",
+        "reasonCode": "CHALLENGE"
+    }, {
+        "activityCode": "034",
+        "activityDescription": "Running or marathons",
+        "reasonCode": "CHALLENGE"
+    }, {
+        "activityCode": "035",
+        "activityDescription": "Swimming",
+        "reasonCode": "CHALLENGE"
+    }, {
+        "activityCode": "036",
+        "activityDescription": "Trekking",
+        "reasonCode": "CHALLENGE"
+    }, {
+        "activityCode": "037",
+        "activityDescription": "Triathlon",
+        "reasonCode": "CHALLENGE"
+    }, {
+        "activityCode": "038",
+        "activityDescription": "Walking",
+        "reasonCode": "CHALLENGE"
+    }, {
+        "activityCode": "039",
+        "activityDescription": "Other",
+        "reasonCode": "CHALLENGE"
+    }]
+}

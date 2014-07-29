@@ -12,7 +12,7 @@ class FundraisersModel extends Model{
   * Variable that will hold the DB connection.
   * @var array
   */
-  public $models = array('Error');
+  public $models = array('Error', 'Countries');
 
   /**
   * Variable that holds the api area being called.
@@ -34,10 +34,7 @@ class FundraisersModel extends Model{
   public function init(){
     // Pull in some dummy records into the data.
     $dummy_content = DIR_ROOT . '/Config/DummyFundraiserRecords.json';
-    if(file_exists($dummy_content)){
-      $file = file_get_contents($dummy_content);
-      $this->data = json_decode($file, true);
-    } else return 'Dummy Records not found!';
+    $this->read_file($dummy_content);
   }
 
   /**
@@ -49,6 +46,7 @@ class FundraisersModel extends Model{
   public function validate($key, $data){
     // Set up variable to hold error code.
     $error = null;
+    $replace = null;
 
     // Make sure the controller has set what are we are in.  This should be automatic.
     if($this->area){
@@ -106,16 +104,95 @@ class FundraisersModel extends Model{
           }
           break;
 
-          /**
+        /**
          * Fundraiser details API validation rules.
          */
-        case 'account':
+        case 'urls/teams':
+        case 'urls':
+          // Change the dummy content being pulled in.
+          $this->read_file(DIR_ROOT . "/Config/DummyUrlsTaken.json");
           switch($key){
 
+            // Validation for url.
+            case 'url':
+              if((!$data || empty($data)) || (strlen($data) > 45 || strlen($data) < 3)){
+                $error = '001.00.002';
+              }
+              break;
+
+            // Validation to see if api_key is there.
+            case 'api_key':
+              if(!$data || empty($data)) {
+                $error = '001.00.004';
+              }
+              break;
+
+            // When no custom rules, invalid value.
+            default:
+              $error = '001.00.001';
+          }
+          break;
+
+        /**
+         * Fundraiser API create account validation rules.
+         */
+        case 'newaccount':
+          switch($key){
+
+            // Validation for url.
+            case 'countryCode':
+              $codes = array();
+              foreach($this->Countries->data['countries'] as $country){
+                $codes[] = $country['countryCode'];
+              }
+              if(!in_array($data, $codes)){
+                $error = '002.01.03';
+              }
+              break;
+
+            // Validation for title.
+            case 'title':
+              $accepted_titles = array('Mr', 'Mrs', 'Ms', 'Miss', 'Dr', 'Prof');
+              if(!$data || empty($data) || !in_array($data, $accepted_titles)){
+                $error = '002.01.04';
+              }
+              break;
+
+            // Validation for personalUrl
+            case 'personalUrl':
+              // @todo Loop back and validate URL.
+              break;
+
             // Validation for surname.
-            case 'resouceId':
-              if(!$data || empty($data)){
-                $error = '001.02.009';
+            case 'surname':
+              if(!$data || empty($data) || strlen($data) > 50){
+                $error = '002.01.06';
+              }
+              break;
+
+            // Validation for forename.
+            case 'forename':
+              if(!$data || empty($data) || strlen($data) > 50){
+                $error = '002.01.07';
+              }
+              break;
+
+            // Validation for terms and conditions.
+            case 'termsAndCondtionsAccepted':
+              if(!$data || empty($data) || strtoupper($data) != 'Y'){
+                $error = '002.01.08';
+              }
+              break;
+
+            // Validation for email address.
+            case 'emailAddress':
+              if(!$data || empty($data) || $data > 255){
+                $error = '002.01.09';
+              }
+              // @todo Fix the fricking regex that should (but doesn't) work. ><
+              $email_regx = "§^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$§";
+              if(!$data || empty($data) || preg_match($email_regx, $data)){
+                $error = '002.01.09';
               }
               break;
 
@@ -136,25 +213,10 @@ class FundraisersModel extends Model{
 
     // If an error code exists.
     if($error){
-      return $this->setError($error, $replace);
+      return $this->set_error($error, $replace);
     } else {
       return true;
     }
-  }
-
-  public function setError($code, $replace = null){
-    if($replace){
-      // Replace the tokens with the correct data.
-      $message = str_replace($replace[0], $replace[1], $this->Error->errors[$code]['Explanation']);
-    } else {
-      $message = $this->Error->errors[$code]['Explanation'];
-    }
-    // Set the error code and messages as determined above.
-    $this->errors[] = array(
-      'errorCode' => $code,
-      'errorMessage' => $message
-    );
-    return false;
   }
 }
 

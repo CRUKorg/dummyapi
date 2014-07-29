@@ -1,7 +1,7 @@
 {
-  "000.00.000": {
+  "000.00.003": {
     "Message":"error.key.missing",
-    "Explanation":"The API key is missing or incorrect."
+    "Explanation":"This API Key is either inactive, or does not have access to the requested resource."
   },
   "001.00.001": {
     "Message":"error.invalid.value",

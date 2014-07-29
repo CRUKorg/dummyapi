@@ -34,7 +34,7 @@ class FundraisersModel extends Model{
    */
   public function init(){
     // Pull in some dummy records into the data.
-    $dummy_content = DIR_ROOT . '/Config/DummyFundraiserRecords.json';
+    $dummy_content = MODEL_ROOT .'FundraiserRecords.json';
     $this->read_file($dummy_content);
   }
 
@@ -50,7 +50,7 @@ class FundraisersModel extends Model{
     $replace = null;
     $extra = null;
 
-    $api_keys = $this->read_file(DIR_ROOT . '/Config/DummyApiKeys.json', true);
+    $api_keys = $this->read_file(MODEL_ROOT . 'ApiKeys.json', true);
 
     // Make sure the controller has set what are we are in.  This should be automatic.
     if($this->area){
@@ -111,7 +111,7 @@ class FundraisersModel extends Model{
         case 'urls/teams':
         case 'urls':
           // Pull in some dummy fake URLs that will be merged with users urls.
-          $urls = $this->read_file(DIR_ROOT . "/Config/DummyUrlsTaken.json", true);
+          $urls = array();
           foreach($this->data as $record){
             if($record['personalUrl'] && !empty($record['personalUrl'])){
               $urls[] = $record['personalUrl'];
@@ -299,7 +299,7 @@ class FundraisersModel extends Model{
               }
               break;
 
-            // Validation for resourceID
+            // Validation for resourceID.
             case 'charityResourceId':
               if(!$data || empty($data)){
                 $error = '001.01.004';
@@ -315,6 +315,125 @@ class FundraisersModel extends Model{
               );
           }
           break;
+
+         /**
+         * Fundraiser newpage API validation rules.
+         */
+        case 'account/secure/newpage':
+          switch($key){
+
+            // Validation for teamName.
+            case 'teamName':
+              if(!$data || empty($data)){
+                $error = '003.01.01';
+              } elseif($data > 255){
+                $error = '003.01.02';
+              }
+              break;
+
+            // Validation for teamUrl.
+            case 'teamUrl':
+              if($data > 255){
+                $error = '003.01.03';
+              }
+              break;
+
+            // Validation for pageTitle.
+            case 'pageTitle':
+              if(!$data || empty($data) || strlen($data) > 45){
+                $error = '003.01.05';
+              }
+              break;
+
+            // Validation for fundraisingDate.
+            case 'fundraisingDate':
+              $date_regx = "/^[0-9]{4}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$/";
+              if(!$data || empty($data) || !preg_match($dob_regx, $data)){
+                $error = '003.01.07';
+              } else {
+                // Make sure the date is in the future.
+                $from = new DateTime($data);
+                $to = new DateTime('today');
+                if($from->diff($to)->y < 1){
+                  $error = '003.01.08';
+                }
+              }
+              break;
+
+            // Validation for teamPageIndidcator.
+            case 'teamPageIndicator':
+              if(!$data || empty($data) || !in_array(strtoupper($data), array('Y', 'N'))){
+                $error = '003.01.09';
+              }
+              break;
+
+            // Validation for teamPageIndidcator.
+            case 'teamUrl':
+              if(!$data || empty($data) || $data > 100){
+                $error = '003.01.11';
+              }
+              break;
+
+            // Validation for charityResourceId.
+            case 'charityResourceId':
+              if(!$data['charityResourceId'] || empty($data['charityResourceId'])){
+                $error = '003.01.12';
+              } elseif(is_array($data['charityResourceId']) && count($data['charityResourceId']) > 5){
+                $error = '003.01.13';
+              } else {
+                foreach($data['charitySplits'] as $split){
+                  $cids[] = $split['charityResourceId'];
+                }
+              }
+              break;
+
+            // Validation for cahritySplits.
+            case 'charitySplits':
+              if($data || !empty($data)){
+                $total = 0;
+                foreach($data as $k => $charity){
+                  $total += $charity['charitySplitPercent'];
+                }
+                if($total != 100){
+                  $error = '003.01.15';
+                }
+              } else {
+                $error = '003.01.15';
+              }
+              break;
+
+            // Validation for postEventFundraisingInterval.
+            case 'postEventFundraisingInterval':
+              if($data || !empty($data) || $data > 36){
+                $error = '003.01.16';
+              }
+              break;
+
+            // Validation for charitycontributionIndicator.
+            case 'charitycontributionIndicator':
+              if(!$data || empty($data) || !in_array(strtoupper($data), array('Y', 'N'))){
+                $error = '003.01.17';
+              }
+              break;
+
+            // Validation for charitycontributionIndicator.
+            case 'activityCode':
+              if(!$data || empty($data) || !in_array(strtoupper($data), array('Y', 'N'))){
+                $error = '003.01.17';
+              }
+              break;
+
+            // When no custom rules, invalid value.
+            default:
+              $error = '001.00.001';
+              $replace = array(
+                array('{{field}}'),
+                array($key)
+              );
+
+
+          }
+          break;
       }
     } else {
       // Setup some validation rules outside of an area, such as the api key.
@@ -322,7 +441,7 @@ class FundraisersModel extends Model{
         // Validation to see if api_key is there.
         case 'api_key':
           if(!$data || empty($data) || !in_array($data, $api_keys)) {
-            $error = '000.00.000';
+            $error = '000.00.003';
           }
           break;
       }

@@ -25,7 +25,7 @@ class ErrorModel extends Model{
    * Custom function to check for and read from the ErrorCodes json file.
    */
   public function getErrorTypes(){
-    $error_location = DIR_ROOT . '/Config/ErrorCodes.json';
+    $error_location = MODEL_ROOT . '/ErrorCodes.json';
     if(file_exists($error_location)){
       $file = file_get_contents($error_location);
       $errors = json_decode($file, true);

@@ -14,17 +14,20 @@ class FundraisersController extends Controller{
    * The initialisation of this module..
    */
   public function init(){
+    $this->model('Fundraisers');
+
     // Get all the request headers for this request.
     $request_headers = getallheaders();
-    $this->model('Fundraisers');
 
     // Setup an empty array to output.
     $return_data = array();
     $expected_return = array();
 
+    // Remove all the .json from actions.
     foreach($this->router->action as $rk => $rv){
-      $this->router->action[$rk] = str_replace('.json', '', $rv);
+      $this->router->action[$rk] = str_replace(array('.json', '.xml'), '', $rv);
     }
+
 
     // Check to see if there is a version number.
     if(isset($this->router->action[1])){
@@ -40,7 +43,7 @@ class FundraisersController extends Controller{
             if($_GET && !empty($_GET['api_key'])){
               $this->model->validate('api_key', $_GET['api_key']);
             } else {
-              $this->model->set_error('000.00.000');
+              $this->model->set_error('000.00.003');
             }
             if(!empty($this->model->errors)){
               $this->output_json($this->model->errors);
@@ -119,50 +122,128 @@ class FundraisersController extends Controller{
                * Case holds logic for endpoint: fundraisers/v1/account
                */
               case 'account' :
-                // Setup some expected parameters.
-                $expected_array = array(
-                  'resourceId' => array('required' => true)
-                );
-                // Say what fields we are expecitng to return.
-                $expected_return = array('fundraiserName', 'title', 'forename', 'surname', 'resourceId', 'personalUrl, fundraisingURI', 'pageSummary');
+                /**
+                 * Secure account stuff happens here.
+                 */
+                if(isset($this->router->action[3]) && $this->router->action[3] == 'secure'){
+                  $fundraiser = $this->router->action[4];
+                  $this->model->area .= "/{$this->router->action[3]}/{$this->router->action[5]}";
 
-                // Check if there are any GET parameters to deal with.
-                if($_GET){
-                  // Loop through all the $_GET parameters and check there are no invalid values.
-                  foreach($_GET as $getk => $getv){
-                    // Check for keys that aren't expected.
-                    if(!in_array($getk, array_keys($expected_array))){
-                      // Run it through the validate to get the error message.
-                      $this->model->validate($getk, $getv);
-                    }
-                  }
-                  foreach($expected_array as $expk => $expv) {
-                    // Only validate if the expected array element is required.
-                    if($expv['required']) {
-                      $this->model->validate($expk, $_GET[$expk]);
-                    }
-                  }
-                }
+                  /**
+                   * Switch for secure elements of the account.
+                   */
+                  switch($this->router->action[5]){
 
-                // If we haven't errored out yet, this is the last thing to do.
-                if(empty($this->model->errors)){
-                  foreach($this->model->data as $record){
-                    if($record['resourceId'] == $_GET['resourceId']){
-                      // Return the expected fields from the record.
-                      foreach($expected_return as $field){
-                        $return_data[$field] = $record[$field];
+                    /**
+                     * Case holds logic for endpoint: fundraisers/v1/account/secure/{fundraiserResourceId}/newpage
+                     */
+                    case 'newpage':
+                      $expected_array = array(
+                        'pageTitle' => array('required' => true),
+                        'eventResourceId' => array('required' => false),
+                        'fundraisingDate' => array('required' => false),
+                        'teamPageIndicator' => array('required' => true),
+                        'teamName' => array('required' => false),
+                        'teamUrl' => array('required' => false),
+                        'activityCode' => array('required' => false),
+                        'activityDescription' => array('required' => true),
+                        'charitycontributionIndicator' => array('required' => true),
+                        'postEventFundraisingInterval' => array('required' => true),
+                        'fundraisingTarget' => array('required' => false),
+                        'charitySplits' => array('required' => true),
+                      );
+
+                      $request_body = file_get_contents('php://input');
+
+                      // Check if the request is JSON, otherwise it's a postbody.
+                      if(json_decode($request_body, true)){
+                        $data = json_decode($request_body, true);
+                      } else {
+                        parse_str($request_body, $data);
                       }
-                      // Break out the loop.
+
+                      if($data){
+                        if(empty($data)){
+                          $this->model->set_error('003.01.04');
+                        }
+                         // Loop through all the $_POST parameters and check there are no invalid values.
+                        foreach($data as $getk => $getv){
+                          // Check for keys that aren't expected.
+                          if(!in_array($getk, array_keys($expected_array))){
+                            // Run it through the validate to get the error message.
+                            $this->model->validate($getk, $getv);
+                          }
+                        }
+                        $this->model->validate('pageTitle', $data['pageTitle']);
+                        if($this->model->validate('teamPageIndicator', $data['teamPageIndicator'])){
+                          if($data['teamPageIndicator'] == 'Y'){
+                            $this->model->validate('teamName', $data['teamName']);
+                            $this->model->validate('teamUrl', $data['teamUrl']);
+                          }
+                        }
+                        if(!$data['eventResourceId'] || empty($data['eventResourceId'])){
+                          $this->model->validate('activityCode', $data['activityCode']);
+                        } else {
+                          $this->model->validate('eventResourceId', array('eventResourceId' => $data['eventResourceId'], 'charitySplits' => $data['charitySplits']));
+                        }
+                        if(($data['activityCode'] || !empty($data['activityCode'])) && $data['activityCode'] == '039'){
+                          $this->model->validate('activityDescription', $data['activityDescription']);
+                        }
+
+                        $this->model->validate('charitycontributionIndicator', $data['charitycontributionIndicator']);
+                        $this->model->validate('postEventFundraisingInterval', $data['postEventFundraisingInterval']);
+
+                        $this->model->validate('charityResourceId', $data['charitySplits']);
+                        $this->model->validate('charitySplits', $data['charitySplits']);
+                      } else{
+                        $this->model->set_error('003.01.04');
+                      }
+
+                      // If we haven't errored out yet, this is the last thing to do.
+                      if(empty($this->model->errors)){
+                        $return_data = array(
+                          'creationSuccessful' => true,
+                          'pageTitle' => $data['pageTitle'],
+                          'pageUrl' => 1,
+                          'pageURI' => "http://{$_SERVER['HTTP_HOST']}/fundraisers/v1/account/{$this->router->action[4]}/page/1"
+                        );
+                      } else {
+                        $return_data = $this->model->errors;
+                      }
+
+                      $this->output_json($return_data);
                       break;
-                    } else {
-                      $this->model->set_error('001.02.011');
-                      $return_data = $this->model->errors;
-                    }
+
                   }
-                } else {
-                  $return_data = $this->model->errors;
                 }
-                $this->output_json($return_data);
+
+                /**
+                 * The normal account end point.
+                 */
+                else {
+                  // Say what fields we are expecitng to return.
+                  $expected_return = array('fundraiserName', 'title', 'forename', 'surname', 'resourceId', 'personalUrl, fundraisingURI', 'pageSummary');
+
+                  // If we haven't errored out yet, this is the last thing to do.
+                  if(empty($this->model->errors)){
+                    foreach($this->model->data as $record){
+                      if($this->router->action[3] == $record['resourceId']){
+                        // Return the expected fields from the record.
+                        foreach($expected_return as $field){
+                          $return_data[$field] = $record[$field];
+                        }
+                        // Break out the loop.
+                        break;
+                      } else {
+                        $this->model->set_error('001.02.011');
+                        $return_data = $this->model->errors;
+                      }
+                    }
+                  } else {
+                    $return_data = $this->model->errors;
+                  }
+                  $this->output_json($return_data);
+                }
                 break;
 
               /**
@@ -232,12 +313,29 @@ class FundraisersController extends Controller{
                   'charityResourceId' => array('required' => false),
                 );
 
-                if($_POST){
-                  if(empty($_POST)){
+                $request_body = file_get_contents('php://input');
+
+                // Check if the request is JSON, otherwise it's a postbody.
+                if(json_decode($request_body, true)){
+                  $data = json_decode($request_body, true);
+                } else {
+                  parse_str($request_body, $data);
+                }
+
+                // Setup an empty array to output.
+                $return_data = array();
+                $expected_return = array();
+
+                foreach($this->router->action as $rk => $rv){
+                  $this->router->action[$rk] = str_replace('.json', '', $rv);
+                }
+
+                if($data){
+                  if(!$data || empty($data)){
                     $this->model->set_error('002.01.02');
                   }
                    // Loop through all the $_GET parameters and check there are no invalid values.
-                  foreach($_POST as $getk => $getv){
+                  foreach($data as $getk => $getv){
                     // Check for keys that aren't expected.
                     if(!in_array($getk, array_keys($expected_array))){
                       // Run it through the validate to get the error message.
@@ -247,16 +345,16 @@ class FundraisersController extends Controller{
                   foreach($expected_array as $expk => $expv) {
                     // Only validate if the expected array element is required.
                     if($expv['required']) {
-                      $this->model->validate($expk, $_POST[$expk]);
+                      $this->model->validate($expk, $data[$expk]);
                     }
                   }
-                  $this->model->validate('addressLine1/townCity', array('addressLine1' => $_POST['addressLine1'], 'townCity' => $_POST['townCity']));
-                  $this->model->validate('emailAddress/dateOfBirth', array('emailAddress' => $_POST['emailAddress'], 'dateOfBirth' => $_POST['dateOfBirth']));
-                  if(isset($_POST['customCodes'])){
-                    $this->model->validate('customCodes', $_POST['fundraiserCustomCode']);
+                  $this->model->validate('addressLine1/townCity', array('addressLine1' => $data['addressLine1'], 'townCity' => $data['townCity']));
+                  $this->model->validate('emailAddress/dateOfBirth', array('emailAddress' => $data['emailAddress'], 'dateOfBirth' => $data['dateOfBirth']));
+                  if(isset($data['customCodes'])){
+                    $this->model->validate('customCodes', $data['fundraiserCustomCode']);
                   }
-                  if(isset($_POST['charityResourceId'])){
-                    $this->model->validate('charityResourceId', $_POST['charityResourceId']);
+                  if(isset($data['charityResourceId'])){
+                    $this->model->validate('charityResourceId', $data['charityResourceId']);
                   }
                 } else {
                   $this->model->set_error('002.01.01');
@@ -265,23 +363,15 @@ class FundraisersController extends Controller{
                 // If we haven't errored out yet, this is the last thing to do.
                 if(empty($this->model->errors)){
                   $return_data = array(
-                    'title' => $_POST['title'],
-                    'forename' => $_POST['forename'],
-                    'addressLine1' => $_POST['addressLine1'],
-                    'addressLine2' => $_POST['addressLine2'],
-                    'townCity' => $_POST['townCity'],
-                    'countyState' => $_POST['countyState'],
-                    'postcode' => $_POST['postcode'],
-                    'countryCode' => $_POST['countryCode'],
-                    'preferredTelephone' => $_POST['preferredTelephone'],
-                    'emailAddress' => $_POST['emailAddress'],
-                    'personalUrl' => $_POST['personalUrl'],
-                    'termsAndConditionsAccepted' => $_POST['termsAndConditionsAccepted'],
-                    'charityMarketingIndicator' => $_POST['charityMarketingIndicator'],
-                    'allCharityMarketingIndicator' => $_POST['allCharityMarketingIndicator'],
-                    'virginMarketingIndicator' => $_POST['virginMarketingIndicator'],
-                    'dateOfBirth' => $_POST['dateOfBirth'],
-                    'vmgMarketingIndicator' => $_POST['vmgMarketingIndicator'],
+                    'creationSuccessful' => true,
+                    'fundraiserName' => "{$data['title']} {$data['forename']} {$data['surname']}",
+                    'resourceId' => "318fc319-3b19-4314-9c8d-404b14e51eb2",
+                    'personalUrl' => "http://uk.sandbox.virginmoneygiving.com/mytesturl",
+                    'alternateURLs' => null,
+                    'accessToken' => "mdznarvxftjk2p365tyv7zp8",
+                    'responseURI' => "https://sandbox.api.virginmoneygiving.com/fundraisers/v1/account/318fc319-3b19-4314-9c8d-404b14e51eb2",
+                    'customerExists' => false,
+                    'message' => "Token expires in 600 seconds"
                   );
                 } else {
                   $return_data = $this->model->errors;

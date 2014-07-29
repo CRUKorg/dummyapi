@@ -10,10 +10,10 @@
  */
 class FundraisersModel extends Model{
   /**
-  * Variable that will hold the DB connection.
+  * Variable that holds an array of other models data that is used in this model.
   * @var array
   */
-  public $models = array('Error', 'Countries');
+  public $models = array('Error', 'Countries', 'Activities', 'Events');
 
   /**
   * Variable that holds the api area being called.
@@ -34,7 +34,7 @@ class FundraisersModel extends Model{
    */
   public function init(){
     // Pull in some dummy records into the data.
-    $dummy_content = MODEL_ROOT .'FundraiserRecords.json';
+    $dummy_content = MODEL_ROOT .'data/FundraiserRecords.json';
     $this->read_file($dummy_content);
   }
 
@@ -376,23 +376,23 @@ class FundraisersModel extends Model{
 
             // Validation for charityResourceId.
             case 'charityResourceId':
-              if(!$data['charityResourceId'] || empty($data['charityResourceId'])){
+              if(!$data || empty($data)){
                 $error = '003.01.12';
-              } elseif(is_array($data['charityResourceId']) && count($data['charityResourceId']) > 5){
+              } elseif(is_array($data) && count($data) > 5){
                 $error = '003.01.13';
-              } else {
-                foreach($data['charitySplits'] as $split){
-                  $cids[] = $split['charityResourceId'];
-                }
               }
               break;
 
-            // Validation for cahritySplits.
+            // Validation for charitySplits.
             case 'charitySplits':
               if($data || !empty($data)){
                 $total = 0;
                 foreach($data as $k => $charity){
-                  $total += $charity['charitySplitPercent'];
+                  if((!$charity['charityResourceId'] || empty($charity['charityResourceId'])) || (!$charity['charitySplitPercent'] || empty($charity['charitySplitPercent']))){
+                    $this->set_error('002.01.30');
+                  } else {
+                    $total += $charity['charitySplitPercent'];
+                  }
                 }
                 if($total != 100){
                   $error = '003.01.15';
@@ -404,7 +404,7 @@ class FundraisersModel extends Model{
 
             // Validation for postEventFundraisingInterval.
             case 'postEventFundraisingInterval':
-              if($data || !empty($data) || $data > 36){
+              if(!$data || empty($data) || ($data < 1 || $data > 36)){
                 $error = '003.01.16';
               }
               break;
@@ -416,10 +416,55 @@ class FundraisersModel extends Model{
               }
               break;
 
-            // Validation for charitycontributionIndicator.
+            // Validation for activityCode.
             case 'activityCode':
-              if(!$data || empty($data) || !in_array(strtoupper($data), array('Y', 'N'))){
-                $error = '003.01.17';
+              $act_codes = array();
+              foreach($this->Activities->data['activityTypes'] as $activity){
+                $act_codes[] = $activity['activityCode'];
+              }
+              if(!$data || empty($data) || !in_array($data, $act_codes)){
+                $error = '003.01.18';
+              }
+              break;
+
+            // Validation for activityDescription.
+            case 'activityDescription':
+              if(!$data['activityDescription'] || empty($data['activityDescription'])){
+                $error = '003.01.19';
+              }
+              break;
+
+            // Validation for eventResourceId.
+            case 'eventResourceId':
+              if(!$data['eventResourceId'] || empty($data['eventResourceId'])){
+                $error = '002.01.24';
+              } else {
+                foreach($this->Events->data['events'] as $event){
+                  if($data['eventResourceId'] == $event['eventResourceId']){
+                    $from = strtotime($event['eventDate']);
+                    $to = strtotime('today');
+                    if(($from - $to) < 0){
+                      $this->set_error('002.01.25');
+                    }
+                    if($events['charities'] && !empty($events['charities'])){
+                      if(count($data['charitySplits']) > count($event['charities'])){
+                        $this->set_error('002.01.26');
+                      }
+                      foreach($event['charities']['charity'] as $key => $charity){
+                        $echarities[] = $charity['charityResourceId'];
+                      }
+                      foreach($data['charitySplits'] as $ckey => $csplit){
+                        $scharities[] = $csplit['charityResourceId'];
+                      }
+                      if(!in_array($scharities, $echarities)){
+                        $this->set_error('003.01.20');
+                      }
+                    }
+                    if($event['eventFee']){
+                      $this->set_error('002.01.27');
+                    }
+                  }
+                }
               }
               break;
 

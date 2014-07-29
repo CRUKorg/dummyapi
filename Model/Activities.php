@@ -16,7 +16,7 @@ class ActivitiesModel extends Model{
    */
   public function init(){
     // Pull in some dummy records into the data.
-    $dummy_content = MODEL_ROOT . 'ActivityCodes.json';
+    $dummy_content = MODEL_ROOT . 'data/ActivityCodes.json';
     $this->read_file($dummy_content);
   }
 }

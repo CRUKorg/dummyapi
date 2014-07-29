@@ -1,0 +1,30 @@
+{
+  "events": [{
+    "name": "Test Event",
+    "eventDescription": "Annual 10K Run",
+    "eventURI": "https://api.virginmoneygiving.com/events/v1/account/6ec58742-b702-11e2-aba0-00237d9ded4e/summary",
+    "eventResourceId": "6ec58742-b702-11e2-aba0-00237d9ded4e",
+    "eventLocation": "International",
+    "eventDate": "20130728",
+    "eventFee": true
+  },{
+    "name": "Test Event",
+    "eventDescription": "Annual 20K Run",
+    "eventURI": "https://api.virginmoneygiving.com/events/v1/account/6ec58742-b702-11e2-aba0-00237d9ded4e/summary",
+    "eventResourceId": "6ec58742-b702-11e2-aba0-fsadfdsa7889",
+    "eventLocation": "International",
+    "eventDate": "201509",
+    "charities": {
+      "charity": [
+        {
+            "charityResourceId": "05328d10-8d5f-11e2-ad62-005056a8589d",
+            "charitySplitPercent": 25
+        },
+        {
+            "charityResourceId": "05343034-8d5f-11e2-ad62-005056a8589d",
+            "charitySplitPercent": 75
+        }
+      ]
+    }
+  }]
+}

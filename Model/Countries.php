@@ -16,7 +16,7 @@ class CountriesModel extends Model{
    */
   public function init(){
     // Pull in some dummy records into the data.
-    $dummy_content = MODEL_ROOT . 'CountryCodes.json';
+    $dummy_content = MODEL_ROOT . 'data/CountryCodes.json';
     $this->read_file($dummy_content);
   }
 }

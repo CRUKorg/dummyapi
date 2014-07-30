@@ -1,17 +1,40 @@
 <?php
 /**
- * Fundraisers end point controller.
- * The controller to route to the end points for fundraisers.
+ * Fundraisers controller.
+ * This is the controller for the fundraisers route.
+ * 
+ * In this controller, there are multiple switches to determine which
+ * end point will be exposed to the users.
+ * 
+ * The controller assumes that it is to return JSON and as such,
+ * headers aren't needed to get the data, however it is recommended to build the complete
+ * calls as per the documentation.
  *
- * @package: Framework
- * @category: Controller
- * @author: Kris Pomphrey <kris@krispomphrey.co.uk>
+ * @link https://developer.virginmoneygiving.com/docs
+ *
+ * A valid API key needs to be passed in a GET parameter.
+ *
+ * Paths for the fundraisers end point are built up as follows:
+ * @example http://host/fundraisers/v1/xxx(/xxx)?api_key=xxxxxxxxxxxxx
+ *
+ * @package Framework
+ * @category Controller
+ * @author Kris Pomphrey <kris@krispomphrey.co.uk>
  */
 class FundraisersController extends Controller{
   /**
    * Implements init();
+   * Initialise the controller.
+   * 
+   * There are multiple switches in this method that will determine what data
+   * to return to the user.
    *
-   * The initialisation of this module..
+   * @uses Controller::model() to set the data model.
+   * @uses FundraisersController::output_json() function to return formatted JSON.
+   * @uses FundraisersModel::validate() to validate the data being parsed.
+   * @uses FundraisersModel::set_error() to set the correct error message.
+   * 
+   * @return void
    */
   public function init(){
     $this->model('Fundraisers');
@@ -61,6 +84,7 @@ class FundraisersController extends Controller{
             switch ($this->model->area){
 
               /**
+               * @api 
                * Case holds logic for endpoint: fundraisers/v1/search
                */
               case 'search' :
@@ -119,6 +143,7 @@ class FundraisersController extends Controller{
                 break;
 
               /**
+               * @api
                * Case holds logic for endpoint: fundraisers/v1/account
                */
               case 'account' :
@@ -135,6 +160,7 @@ class FundraisersController extends Controller{
                   switch($this->router->action[5]){
 
                     /**
+                     * @api
                      * Case holds logic for endpoint: fundraisers/v1/account/secure/{fundraiserResourceId}/newpage
                      */
                     case 'newpage':
@@ -218,7 +244,8 @@ class FundraisersController extends Controller{
                 }
 
                 /**
-                 * The normal account end point.
+                 * @api
+                 * Case holds logic for endpoint: fundraisers/v1/account
                  */
                 else {
                   // Say what fields we are expecitng to return.
@@ -247,6 +274,7 @@ class FundraisersController extends Controller{
                 break;
 
               /**
+               * @api
                * Case holds logic for endpoints:
                * - fundraisers/v1/urls
                * - fundraisers/v1/urls/teams

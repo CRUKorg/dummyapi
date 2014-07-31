@@ -1,7 +1,8 @@
 <?php
 /**
  * Fundraisers end point model.
- * Model holds the validation rules for fundraisers end point.
+ *
+ * This model emulates the events api by exposing all events into the app.
  *
  * @package: Framework
  * @category: Model
@@ -12,7 +13,9 @@ class EventsModel extends Model{
   /**
    * Implements init();
    *
-   * Initialise the Fundraisers Model.
+   * Initialise the Events Model.
+   *
+   * @return void
    */
   public function init(){
     // Pull in some dummy records into the data.

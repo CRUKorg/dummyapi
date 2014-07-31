@@ -1,8 +1,10 @@
 <?php
 /**
- * Fundraisers end point model.
- * Model holds the validation rules for fundraisers end point.
+ * Countries Model.
  *
+ * This model simulates the country code API by allowing access to
+ * the data stored in the json files when invoked.
+ * 
  * @package: Framework
  * @category: Model
  * @author: Kris Pomphrey <kris@krispomphrey.co.uk>
@@ -12,7 +14,9 @@ class CountriesModel extends Model{
   /**
    * Implements init();
    *
-   * Initialise the Fundraisers Model.
+   * Initialise the Countries Model and make the data avilable to the app.
+   *
+   * @return void
    */
   public function init(){
     // Pull in some dummy records into the data.

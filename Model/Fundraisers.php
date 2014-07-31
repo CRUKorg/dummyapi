@@ -1,6 +1,7 @@
 <?php
 /**
  * Fundraisers end point model.
+ *
  * Model holds the data (dummy data) and
  * validation rules for fundraisers end point.
  *
@@ -31,6 +32,7 @@ class FundraisersModel extends Model{
    * Implements init();
    *
    * Initialise the Fundraisers Model.
+   * @return void
    */
   public function init(){
     // Pull in some dummy records into the data.
@@ -43,6 +45,11 @@ class FundraisersModel extends Model{
    *
    * Custom validation function that checks data integrity, pulling through
    * the correct error message if applicable.
+   *
+   * @param string  $key    Holds the key to what we are validating.
+   * @param mixed   $data   Holds the actual data being validated.
+   *
+   * @return boolean
    */
   public function validate($key, $data){
     // Set up variable to hold error code.
@@ -389,7 +396,7 @@ class FundraisersModel extends Model{
                 $total = 0;
                 foreach($data as $k => $charity){
                   if((!$charity['charityResourceId'] || empty($charity['charityResourceId'])) || (!$charity['charitySplitPercent'] || empty($charity['charitySplitPercent']))){
-                    $this->set_error('002.01.30');
+                    $this->Error->set_error('002.01.30');
                   } else {
                     $total += $charity['charitySplitPercent'];
                   }
@@ -444,11 +451,11 @@ class FundraisersModel extends Model{
                     $from = strtotime($event['eventDate']);
                     $to = strtotime('today');
                     if(($from - $to) < 0){
-                      $this->set_error('002.01.25');
+                      $this->Error->set_error('002.01.25');
                     }
                     if($events['charities'] && !empty($events['charities'])){
                       if(count($data['charitySplits']) > count($event['charities'])){
-                        $this->set_error('002.01.26');
+                        $this->Error->set_error('002.01.26');
                       }
                       foreach($event['charities']['charity'] as $key => $charity){
                         $echarities[] = $charity['charityResourceId'];
@@ -457,11 +464,11 @@ class FundraisersModel extends Model{
                         $scharities[] = $csplit['charityResourceId'];
                       }
                       if(!in_array($scharities, $echarities)){
-                        $this->set_error('003.01.20');
+                        $this->Error->set_error('003.01.20');
                       }
                     }
                     if($event['eventFee']){
-                      $this->set_error('002.01.27');
+                      $this->Error->set_error('002.01.27');
                     }
                   }
                 }
@@ -494,7 +501,7 @@ class FundraisersModel extends Model{
 
     // If an error code exists.
     if($error){
-      return $this->set_error($error, $replace, $extra);
+      return $this->Error->set_error($error, $replace, $extra);
     } else {
       return true;
     }

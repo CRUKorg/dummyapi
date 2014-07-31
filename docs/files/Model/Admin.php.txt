@@ -1,5 +1,0 @@
-<?php class AdminModel extends Model{
-	public $models = array('Players');
-	public function init(){ }
-}
-

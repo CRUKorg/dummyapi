@@ -66,12 +66,14 @@ class FundraisersController extends Controller{
             if($_GET && !empty($_GET['api_key'])){
               $this->model->validate('api_key', $_GET['api_key']);
             } else {
-              $this->model->set_error('000.00.003');
+              $this->model->Error->set_error('000.00.003');
             }
-            if(!empty($this->model->errors)){
-              $this->output_json($this->model->errors);
+            if(!empty($this->model->Error->errors)){
+              $this->output_json($this->model->Error->errors);
+              // Kill the app before it does anything else.
               die();
             } else {
+              // Remove the API key from the get request since we have validated it.
               unset($_GET['api_key']);
             }
 
@@ -116,7 +118,7 @@ class FundraisersController extends Controller{
                   }
                 }
 
-                if(empty($this->model->errors)){
+                if(empty($this->model->Error->errors)){
                   foreach($this->model->data as $record){
                     $search = array(strtoupper($_GET['forename']), strtoupper($_GET['surname']));
                     $compare = array(strtoupper($record['forename']), strtoupper($record['surname']));
@@ -132,12 +134,12 @@ class FundraisersController extends Controller{
                       // Break out the loop.
                       break;
                     } else {
-                      $this->model->set_error('001.02.011');
-                      $return_data = $this->model->errors;
+                      $this->model->Error->set_error('001.02.011');
+                      $return_data = $this->model->Error->errors;
                     }
                   }
                 } else {
-                  $return_data = $this->model->errors;
+                  $return_data = $this->model->Error->errors;
                 }
                 $this->output_json($return_data);
                 break;
@@ -190,7 +192,7 @@ class FundraisersController extends Controller{
 
                       if($data){
                         if(empty($data)){
-                          $this->model->set_error('003.01.04');
+                          $this->model->Error->set_error('003.01.04');
                         }
                          // Loop through all the $_POST parameters and check there are no invalid values.
                         foreach($data as $getk => $getv){
@@ -222,11 +224,11 @@ class FundraisersController extends Controller{
                         $this->model->validate('charityResourceId', $data['charitySplits']);
                         $this->model->validate('charitySplits', $data['charitySplits']);
                       } else{
-                        $this->model->set_error('003.01.04');
+                        $this->model->Error->set_error('003.01.04');
                       }
 
                       // If we haven't errored out yet, this is the last thing to do.
-                      if(empty($this->model->errors)){
+                      if(empty($this->model->Error->errors)){
                         $return_data = array(
                           'creationSuccessful' => true,
                           'pageTitle' => $data['pageTitle'],
@@ -234,7 +236,7 @@ class FundraisersController extends Controller{
                           'pageURI' => "http://{$_SERVER['HTTP_HOST']}/fundraisers/v1/account/{$this->router->action[4]}/page/1"
                         );
                       } else {
-                        $return_data = $this->model->errors;
+                        $return_data = $this->model->Error->errors;
                       }
 
                       $this->output_json($return_data);
@@ -252,7 +254,7 @@ class FundraisersController extends Controller{
                   $expected_return = array('fundraiserName', 'title', 'forename', 'surname', 'resourceId', 'personalUrl, fundraisingURI', 'pageSummary');
 
                   // If we haven't errored out yet, this is the last thing to do.
-                  if(empty($this->model->errors)){
+                  if(empty($this->model->Error->errors)){
                     foreach($this->model->data as $record){
                       if($this->router->action[3] == $record['resourceId']){
                         // Return the expected fields from the record.
@@ -262,12 +264,12 @@ class FundraisersController extends Controller{
                         // Break out the loop.
                         break;
                       } else {
-                        $this->model->set_error('001.02.011');
-                        $return_data = $this->model->errors;
+                        $this->model->Error->set_error('001.02.011');
+                        $return_data = $this->model->Error->errors;
                       }
                     }
                   } else {
-                    $return_data = $this->model->errors;
+                    $return_data = $this->model->Error->errors;
                   }
                   $this->output_json($return_data);
                 }
@@ -292,14 +294,14 @@ class FundraisersController extends Controller{
                   }
                   $url_to_validate = $this->router->action[$c];
                 } else {
-                  $this->model->set_error('001.00.002');
+                  $this->model->Error->set_error('001.00.002');
                 }
 
                 // Check the url passed through.
                 $this->model->validate('url', $url_to_validate);
 
                 // If we haven't errored out yet, this is the last thing to do.
-                if(empty($this->model->errors)){
+                if(empty($this->model->Error->errors)){
                   $return_data = array(
                     'requestedUrl' => $url_to_validate,
                     'urlType' => "fundraiser",
@@ -308,7 +310,7 @@ class FundraisersController extends Controller{
                     'alternateUrlList' => array()
                   );
                 } else {
-                  $return_data = $this->model->errors;
+                  $return_data = $this->model->Error->errors;
                 }
                 $this->output_json($return_data);
                 break;
@@ -360,7 +362,7 @@ class FundraisersController extends Controller{
 
                 if($data){
                   if(!$data || empty($data)){
-                    $this->model->set_error('002.01.02');
+                    $this->model->Error->set_error('002.01.02');
                   }
                    // Loop through all the $_GET parameters and check there are no invalid values.
                   foreach($data as $getk => $getv){
@@ -385,11 +387,11 @@ class FundraisersController extends Controller{
                     $this->model->validate('charityResourceId', $data['charityResourceId']);
                   }
                 } else {
-                  $this->model->set_error('002.01.01');
+                  $this->model->Error->set_error('002.01.01');
                 }
 
                 // If we haven't errored out yet, this is the last thing to do.
-                if(empty($this->model->errors)){
+                if(empty($this->model->Error->errors)){
                   $return_data = array(
                     'creationSuccessful' => true,
                     'fundraiserName' => "{$data['title']} {$data['forename']} {$data['surname']}",
@@ -402,7 +404,7 @@ class FundraisersController extends Controller{
                     'message' => "Token expires in 600 seconds"
                   );
                 } else {
-                  $return_data = $this->model->errors;
+                  $return_data = $this->model->Error->errors;
                 }
                 $this->output_json($return_data);
                 break;

@@ -73,36 +73,6 @@ class Model{
       } else {
         $this->data = json_decode($file, true);
       }
-    } else return 'Dummy Records not found!';
-  }
-
-  /**
-   * Implements set_error();
-   *
-   * Function that will set error message to output.
-   */
-  public function set_error($code, $replace = null, $extra = null){
-    if($replace){
-      // Replace the tokens with the correct data.
-      $message = str_replace($replace[0], $replace[1], $this->Error->errors[$code]['Explanation']);
-    } else {
-      $message = $this->Error->errors[$code]['Explanation'];
-    }
-    // Set the error code and messages as determined above.
-    $this->errors['errors'][] = array(
-      'errorCode' => $code,
-      'errorMessage' => $message
-    );
-
-    // Add extra stuff to the error message.
-    if($extra){
-      foreach($extra as $exk => $exv){
-        $this->errors['errors'][count($this->errors['errors'])-1][$exk] = $exv;
-      }
-    }
-
-    // Remove any duplicates from the array for cleaner output.
-    $this->errors['errors'] = array_map('unserialize', array_unique(array_map('serialize', $this->errors['errors'])));
-    return false;
+    } else return 'Data not found!';
   }
 }

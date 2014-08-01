@@ -106,12 +106,12 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">53</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">37</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="../reports/markers.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">3</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">3</span>
                                 </a>
                             </li>
                             <li>
@@ -136,17 +136,20 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1416318899"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1083177237"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-1416318899" class="accordion-body collapse in">
+            <div id="namespace-1083177237" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
                     <ul>
-                                                                                                    <li class="class"><a href="../classes/Config.html">Config</a></li>
+                                                                                                    <li class="class"><a href="../classes/ActivitiesModel.html">ActivitiesModel</a></li>
+                                                    <li class="class"><a href="../classes/Config.html">Config</a></li>
                                                     <li class="class"><a href="../classes/Controller.html">Controller</a></li>
+                                                    <li class="class"><a href="../classes/CountriesModel.html">CountriesModel</a></li>
                                                     <li class="class"><a href="../classes/ErrorModel.html">ErrorModel</a></li>
+                                                    <li class="class"><a href="../classes/EventsModel.html">EventsModel</a></li>
                                                     <li class="class"><a href="../classes/FundraisersController.html">FundraisersController</a></li>
                                                     <li class="class"><a href="../classes/FundraisersModel.html">FundraisersModel</a></li>
                                                     <li class="class"><a href="../classes/IndexController.html">IndexController</a></li>
@@ -172,8 +175,13 @@
                     <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
 
                     <h1><small>\</small>FundraisersController</h1>
-                    <p><em>Fundraisers end point controller.</em></p>
-                    <p>The controller to route to the end points for fundraisers.</p>
+                    <p><em>Fundraisers controller.</em></p>
+                    <p>This is the controller for the fundraisers route.</p>
+<p>In this controller, there are multiple switches to determine which
+end point will be exposed to the users.</p>
+<p>The controller assumes that it is to return JSON and as such,
+headers aren't needed to get the data, however it is recommended to build the complete
+calls as per the documentation.</p>
 
                     <section id="summary">
                         <h2>Summary</h2>
@@ -230,7 +238,7 @@
                         </section>
                         <section class="row-fluid private">
                             <section class="span4">
-                                                                    <a href="../classes/FundraisersController.html#method_outputJson" class="">outputJson()</a><br />
+                                                                    <a href="../classes/FundraisersController.html#method_output_json" class="">output_json()</a><br />
                                                             </section>
                             <section class="span4">
                                                                     <em>No private properties found</em>
@@ -246,9 +254,9 @@
                     
                     <dl>
                         <dt>File</dt>
-                            <dd><a href="../files/Controller.Fundraisers.php.html"><div class="path-wrapper">Controller/Fundraisers.php</div></a></dd>
+                            <dd><a href="../files/Controller.Fundraisers.html"><div class="path-wrapper">Controller/Fundraisers.php</div></a></dd>
                                                 <dt>Package</dt>
-                            <dd><div class="namespace-wrapper">\: Framework</div></dd>
+                            <dd><div class="namespace-wrapper">\Framework</div></dd>
                                                 <dt>Class hierarchy</dt>
                             <dd class="hierarchy">
                                                                                                                                                                                                                                                                                                 
@@ -259,23 +267,35 @@
                         
                         
                         
-                        
+                                                                            <dt>See also</dt>
+                                                                                    <dd><a href="https://developer.virginmoneygiving.com/docs"><div class="namespace-wrapper">A valid API key needs to be passed in a GET parameter.
+Paths for the fundraisers end point are built up as follows:</div></a></dd>
+                                                    
                                                                         </dl>
                     <h2>Tags</h2>
                     <table class="table table-condensed">
                                             <tr>
                             <th>
-                                author
+                                example
                             </th>
                             <td>
-                                                                    <p>: Kris Pomphrey <a href="mailto:kris@krispomphrey.co.uk">kris@krispomphrey.co.uk</a></p>
+                                                                    
                                                             </td>
                         </tr>
                                             <tr>
                             <th>
-                                todo
+                                category
                             </th>
                             <td>
+                                                                    <p>Controller</p>
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <th>
+                                author
+                            </th>
+                            <td>
+                                                                    <p>Kris Pomphrey <a href="mailto:kris@krispomphrey.co.uk">kris@krispomphrey.co.uk</a></p>
                                                             </td>
                         </tr>
                                         </table>
@@ -312,13 +332,7 @@
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -344,13 +358,7 @@
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -376,13 +384,7 @@
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -408,13 +410,7 @@
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -424,11 +420,13 @@
             <a id="property_queue" name="property_queue" class="anchor"></a>
             <article class="property">
                 <h3 class="public ">$queue</h3>
-                <pre class="signature">$queue</pre>
+                <pre class="signature">$queue : </pre>
                 <p><em></em></p>
                 
 
-                            </article>
+                                <h4>Type</h4>
+                
+                                            </article>
         </div>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
@@ -438,13 +436,7 @@
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -454,11 +446,13 @@
             <a id="property_messages" name="property_messages" class="anchor"></a>
             <article class="property">
                 <h3 class="public ">$messages</h3>
-                <pre class="signature">$messages</pre>
+                <pre class="signature">$messages : </pre>
                 <p><em></em></p>
                 
 
-                            </article>
+                                <h4>Type</h4>
+                
+                                            </article>
         </div>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
@@ -468,13 +462,7 @@
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -484,11 +472,13 @@
             <a id="property_protected" name="property_protected" class="anchor"></a>
             <article class="property">
                 <h3 class="public ">$protected</h3>
-                <pre class="signature">$protected</pre>
+                <pre class="signature">$protected : </pre>
                 <p><em></em></p>
                 
 
-                            </article>
+                                <h4>Type</h4>
+                
+                                            </article>
         </div>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
@@ -498,13 +488,7 @@
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -514,11 +498,13 @@
             <a id="property_login" name="property_login" class="anchor"></a>
             <article class="property">
                 <h3 class="public ">$login</h3>
-                <pre class="signature">$login</pre>
+                <pre class="signature">$login : </pre>
                 <p><em></em></p>
                 
 
-                            </article>
+                                <h4>Type</h4>
+                
+                                            </article>
         </div>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
@@ -528,13 +514,7 @@
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -544,11 +524,13 @@
             <a id="property_auth" name="property_auth" class="anchor"></a>
             <article class="property">
                 <h3 class="public ">$auth</h3>
-                <pre class="signature">$auth</pre>
+                <pre class="signature">$auth : </pre>
                 <p><em></em></p>
                 
 
-                            </article>
+                                <h4>Type</h4>
+                
+                                            </article>
         </div>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
@@ -558,13 +540,7 @@
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -606,13 +582,7 @@
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -647,13 +617,7 @@
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -681,13 +645,7 @@ It is generally used to attach assets.</p>
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -698,9 +656,11 @@ It is generally used to attach assets.</p>
             <article class="method">
                 <h3 class="public ">init()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">init()</pre>
-                <p><em>Implements init();</em></p>
-                <p>The initialisation of this module..</p>
+                <pre class="signature" style="margin-right: 54px;">init() : void</pre>
+                <p><em>Implements init();
+Initialise the controller.</em></p>
+                <p>There are multiple switches in this method that will determine what data
+to return to the user.</p>
 
                 
                 
@@ -709,16 +669,15 @@ It is generally used to attach assets.</p>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
                                                             <dl>
-                                                                            </dl>
+                                                                                                            <dt>Uses</dt>
+                                                                <dd>Controller::model()</dd>
+                                            <dd>FundraisersController::output_json()</dd>
+                                            <dd>FundraisersModel::validate()</dd>
+                                            <dd>FundraisersModel::set_error()</dd>
+                                                </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -758,13 +717,7 @@ It is generally used to attach assets.</p>
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -915,13 +868,7 @@ Sets up the model in the context.</p>
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -966,13 +913,7 @@ Sets up the model in the context.</p>
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -1000,25 +941,19 @@ TODO: Remove HTML from code.</p>
                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
 
                                                                     <div class="row-fluid">
         <div class="span8 content class">
-            <a id="method_outputJson" name="method_outputJson" class="anchor"></a>
+            <a id="method_output_json" name="method_output_json" class="anchor"></a>
             <article class="method">
-                <h3 class="private ">outputJson()</h3>
+                <h3 class="private ">output_json()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">outputJson( <span class="argument">$data</span>)</pre>
-                <p><em>Implements outputJson();</em></p>
+                <pre class="signature" style="margin-right: 54px;">output_json( <span class="argument">$data</span>)</pre>
+                <p><em>Implements output_json();</em></p>
                 <p>Function to simplify the ouput of the json to the page.</p>
 
                                     <h4>Parameters</h4>
@@ -1039,13 +974,7 @@ TODO: Remove HTML from code.</p>
                                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
                             </table>
         </aside>
     </div>
@@ -1099,7 +1028,7 @@ TODO: Remove HTML from code.</p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on July 25th, 2014 at 10:53.
+                    on July 31st, 2014 at 15:27.
                 </section>
             </section>
         </section>

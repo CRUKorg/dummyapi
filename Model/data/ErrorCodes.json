@@ -1,0 +1,363 @@
+{
+  "000.00.003": {
+    "Message":"error.key.missing",
+    "Explanation":"This API Key is either inactive, or does not have access to the requested resource."
+  },
+  "001.00.001": {
+    "Message":"error.invalid.value",
+    "Explanation":"Invalid value. ({{field}})"
+  },
+  "001.00.002":{
+    "Message":"error.url.invalid.value",
+    "Explanation":"URL not supplied or has invalid length - it should be between 3 and 45 characters."
+  },
+  "001.00.003":{
+    "Message":"error.url.invalid.profanity",
+    "Explanation":"This URL is unacceptable."
+  },
+  "001.00.004":{
+    "Message":"error.invalid.path",
+    "Explanation":"Invalid Path: There is no resource for path."
+  },
+  "001.00.005":{
+    "Message":"error.search.invalid.order.direction",
+    "Explanation":"Invalid search order. Please provide A or D."
+  },
+  "001.00.006":{
+    "Message":"error.search.invalid.order.direction",
+    "Explanation":"Row limit exceeded, see additional details for maximum rows allowed."
+  },
+  "001.00.007":{
+    "Message":
+    "error.search.invalid.order.column",
+    "Explanation":"Unexpected sort field name provided, see additional details for valid options."
+  },
+  "001.00.008":{
+    "Message":"error.system.exception",
+    "Explanation":"An internal error occurred servicing your request. Please try again, and if the problem persists, contact Virgin Money Giving."
+  },
+  "001.00.009":{
+    "Message":"error.customcode.invalid.profanity",
+    "Explanation":"Custom code contains unacceptable phrase."
+  },
+  "001.00.010":{
+    "Message":"error.url.invalid.unavailable",
+    "Explanation":"This URL is unavailable. Please select an alternative URL."
+  },
+  "001.00.011":{
+    "Message":"error.invalid.input.type",
+    "Explanation":"The data type of an input value is incorrect. Please provide the correct type. Refer to developer documentation for more details."
+  },
+  "001.01.001":{
+    "Message":"error.charity.search.invalid.value",
+    "Explanation":"The length of the search name is incorrect."
+  },
+  "001.01.002":{
+    "Message":"error.charity.search.no.results",
+    "Explanation":"No matching charity found for the supplied search criteria."
+  },
+  "001.01.003":{
+    "Message":"error.charity.invalid.resource.id",
+    "Explanation":"Invalid charity resource ID."
+  },
+  "001.01.004":{
+    "Message":"error.charity.empty.resource.id",
+    "Explanation":"Missing charity resource ID, please provide a valid charity ID."
+  },
+  "001.01.005":{
+    "Message":"error.charity.fundraiser.pages.no.results",
+    "Explanation":"No fundraiser pages found for the charity."
+  },
+  "001.02.001":{
+    "Message":"error.fundraiser.invalid.resourceid",
+    "Explanation":"Fundraiser resource ID not supplied."
+  },
+  "001.02.002":{
+    "Message":"error.fundraiser.page.no.pageurl",
+    "Explanation":"Page ID not supplied."
+  },
+  "001.02.003":{
+    "Message":"error.fundraiser.page.invalid.pageurl",
+    "Explanation":"Invalid page ID supplied."
+  },
+  "001.02.004":{
+    "Message":"error.fundraiser.page.no.results",
+    "Explanation":"No fundraiser page found for the supplied search criteria."
+  },
+  "001.02.005":{
+    "Message":"error.fundraiser.country.no.results",
+    "Explanation":"Could not retrieve country code details."
+  },
+  "001.02.006":{
+    "Message":"error.fundraiser.activity.no.results",
+    "Explanation":"Could not retrieve activity type details."
+  },
+  "001.02.007":{
+    "Message":"error.fundraiser.postcode.no.results",
+    "Explanation":"No addresses found for postcode supplied."
+  },
+  "001.02.008":{
+    "Message":"error.fundraiser.customcodes.none.provided",
+    "Explanation":"No fundraiser custom codes provided."
+  },
+  "001.02.009":{
+    "Message":"error.fundraiser.no.resourceid",
+    "Explanation":"Fundraiser resource ID not supplied."
+  },
+  "001.02.010":{
+    "Message":"error.fundraiser.search.surname.too.short",
+    "Explanation":"Search {{field}} must be at least 3 characters long."
+  },
+  "001.02.011":{
+    "Message":"error.fundraiser.search.no.results",
+    "Explanation":"No fundraiser found for the supplied search criteria."
+  },
+  "001.02.012":{
+    "Message":"error.fundraiser.search.no.criteria",
+    "Explanation":"No search criteria provided."
+  },
+  "002.01.01":{
+    "Message":"error.create.fundraiser.null",
+    "Explanation":"No fundraiser details provided."
+  },
+  "002.01.02":{
+    "Message":"error.fundraiser.account.create.no.data",
+    "Explanation":"Cannot create fundraiser account - no details supplied."
+  },
+  "002.01.03":{
+    "Message":"error.create.fundraiser.country.invalid",
+    "Explanation":"Country code is invalid."
+  },
+  "002.01.04":{
+    "Message":"error.create.fundraiser.url.empty",
+    "Explanation":"Title is invalid."
+  },
+  "002.01.05":{
+    "Message":"error.create.fundraiser.url.length",
+    "Explanation":"Fundraiser URL not supplied."
+  },
+  "002.01.06":{
+    "Message":"error.create.fundraiser.surname.length",
+    "Explanation":"Surname is invalid. Please provide a value up to 50 characters."
+  },
+  "002.01.07":{
+    "Message":"error.create.fundraiser.forename.length",
+    "Explanation":"Forename is invalid. Please provide a value up to 50 characters."
+  },
+  "002.01.08":{
+    "Message":"error.create.fundraiser.title.invalid",
+    "Explanation":"An account cannot be created if the terms and conditions are not accepted."
+  },
+  "002.01.09":{
+    "Message":"error.create.fundraiser.email.invalid.length",
+    "Explanation":"Email addresses must be up to 255 characters."
+  },
+  "002.01.10":{
+    "Message":"error.create.fundraiser.email.invalid.format",
+    "Explanation":"Email addresses format is invalid. The email address must contain an @ symbol and at least 2 full stops."
+  },
+  "002.01.11":{
+    "Message":"error.create.fundraiser.email.invalid.format",
+    "Explanation":"Email address format is invalid."
+  },
+  "002.01.12":{
+    "Message":"error.create.fundraiser.phone.invalid.length",
+    "Explanation":"A valid phone number up to 16 digits must be provided."
+  },
+  "002.01.13":{
+    "Message":"error.create.fundraiser.dob.missing",
+    "Explanation":"Please provide a date of birth in YYYYMMDD format."
+  },
+  "002.01.14":{
+    "Message":"error.create.fundraiser.dob.invalid",
+    "Explanation":"Please provide a valid date of birth in YYYYMMDD format."
+  },
+  "002.01.15":{
+    "Message":"error.create.fundraiser.dob.invalid",
+    "Explanation":"Fundraiser age should be between 13 and 100 years."
+  },
+  "002.01.16":{
+    "Message":"error.create.address.postcode.exceeds.length",
+    "Explanation":"Postcode should not exceed 8 characters."
+  },
+  "002.01.17":{
+    "Message":"error.create.address.postcode.badformat",
+    "Explanation":"The postcode must be in one of the Royal mail prescribed formats."
+  },
+  "002.01.18":{
+    "Message":"error.create.fundraiser.terms.not.accepted",
+    "Explanation":"Team URL exists. Please select another."
+  },
+  "002.01.19":{
+    "Message":"error.create.address.invalid",
+    "Explanation":"Please provide the first line of address and the town or city name."
+  },
+  "002.01.20":{
+    "Message":"error.create.market.permission.invalid",
+    "Explanation":"Fundraiser URL is invalid. Please provide a value up to 60 characters."
+  },
+  "002.01.21":{
+    "Message":"error.create.customcode.charity.invalid",
+    "Explanation":"A valid charity resource ID must be provided if creating custom codes."
+  },
+  "002.01.22":{
+    "Message":"error.create.customcode.codes.invalid",
+    "Explanation":"Please provide up to 5 valid custom codes."
+  },
+  "002.01.23":{
+    "Message":"error.create.customcode.codes.maxreached",
+    "Explanation":"A maximum of 5 custom codes are allowed."
+  },
+  "002.01.24":{
+    "Message":"error.create.fundraiser.event.not.published",
+    "Explanation":"Event not published."
+  },
+  "002.01.25":{
+    "Message":"error.create.fundraiser.event.expired",
+    "Explanation":"Event has expired."
+  },
+  "002.01.26":{
+    "Message":"error.create.fundraiser.event.max.charities.reached",
+    "Explanation":"Maximum number of charities has been reached."
+  },
+  "002.01.27":{
+    "Message":"error.create.fundraiser.event.fee.based",
+    "Explanation":"Event is fee-based."
+  },
+  "002.01.28":{
+    "Message":"error.create.fundraiser.event.limit.reached",
+    "Explanation":"Event limit has been reached."
+  },
+  "002.01.29":{
+    "Message":"error.create.fundraiser.event.closed",
+    "Explanation":"Event closed."
+  },
+  "002.01.30":{
+    "Message":"error.create.fundraiser.event.charity.split.mismatch",
+    "Explanation":"Event charity split mismatch."
+  },
+  "002.01.31":{
+    "Message":"error.create.fundraiser.account.exists",
+    "Explanation":"A Virgin Money Giving account already exists for the given email address and date of birth."
+  },
+  "003.01.01":{
+    "Message":"error.create.page.fundraiser.group.name.empty",
+    "Explanation":"Fundraiser team name must be provided for a team page."
+  },
+  "003.01.02":{
+    "Message":"error.create.page.team.name.length",
+    "Explanation":"Fundraising team name exceeds maximum length."
+  },
+  "003.01.03":{
+    "Message":"error.create.page.team.url.length",
+    "Explanation":"Fundraising team URL exceeds maximum length."
+  },
+  "003.01.04":{
+    "Message":"error.create.page.invalid",
+    "Explanation":"No page details supplied."
+  },
+  "003.01.05":{
+    "Message":"error.create.page.title.invalid",
+    "Explanation":"A valid page title up to 45 characters is required."
+  },
+  "003.01.06":{
+    "Message":"error.create.page.event.date.supplied",
+    "Explanation":"A fundraising date is not expected for an organised event."
+  },
+  "003.01.07":{
+    "Message":"error.create.page.activity.date.invalid",
+    "Explanation":"Please provide a valid fundraising date."
+  },
+  "003.01.08":{
+    "Message":"error.create.page.activity.date.past",
+    "Explanation":"Please provide a valid fundraising date in the future."
+  },
+  "003.01.09":{
+    "Message":"error.create.page.team.indicator.invalid",
+    "Explanation":"Please enter Y or N to indicate if this is a team page."
+  },
+  "003.01.10":{
+    "Message":"error.create.page.team.name.invalid",
+    "Explanation":"Please provide a valid team name of up to 60 characters."
+  },
+  "003.01.11":{
+    "Message":"error.create.page.team.url.invalid",
+    "Explanation":"Please provide a valid team URL of up to 100 characters."
+  },
+  "003.01.12":{
+    "Message":"error.create.page.charity.split.null",
+    "Explanation":"Please provide at least one charity for this fundraising page."
+  },
+  "003.01.13":{
+    "Message":"error.create.page.charity.split.max",
+    "Explanation":"The maximum number of charity allowed has been exceeded."
+  },
+  "003.01.14":{
+    "Message":"error.create.page.charity.split.resourceid",
+    "Explanation":"Charity resource ID missing for split percent."
+  },
+  "003.01.15":{
+    "Message":"error.create.page.charity.split.percent",
+    "Explanation":"The fundraising split does not equal 100 percent."
+  },
+  "003.01.16":{
+    "Message":"error.create.page.charity.post.event.interval",
+    "Explanation":"The post event fundraising interval is invalid - must be between 1 to 36 months."
+  },
+  "003.01.17":{
+    "Message":"error.create.page.charity.indicator.invalid",
+    "Explanation":"Please tell us if a charity has contributed to your page."
+  },
+  "003.01.18":{
+    "Message":"error.create.page.activity.code.invalid",
+    "Explanation":"Please enter Y or N for this value."
+  },
+  "003.01.19":{
+    "Message":"error.create.page.activity.desc.invalid",
+    "Explanation":"A description is required for an activity type 'Other'."
+  },
+  "003.01.20":{
+    "Message":"error.create.page.charity.split.count",
+    "Explanation":"Selected charity does not match event charity."
+  },
+  "003.01.21":{
+    "Message":"error.create.page.charity.not.live",
+    "Explanation":"One or more charity selected is invalid. Please re-check."
+  },
+  "003.01.22":{
+    "Message":"error.create.page.activity.code.invalid",
+    "Explanation":"Please provide a valid activity code."
+  },
+  "003.01.23":{
+    "Message":"error.create.page.event.and.activity",
+    "Explanation":"Please provide either an organised event resource ID OR activity details."
+  },
+  "003.01.24":{
+    "Message":"error.create.page.invalid.teamname.profanity",
+    "Explanation":"This team name is unacceptable."
+  },
+  "004.01.01":{
+    "Message":"error.event.search.invalid.parameters",
+    "Explanation":"Please provide at least one of event name or event date."
+  },
+  "004.01.02":{
+    "Message":"error.event.search.invalid.name.value",
+    "Explanation":"The length of the event search name is incorrect."
+  },
+  "004.01.03":{
+    "Message":"error.event.search.invalid.date.value",
+    "Explanation":"Please provide a valid event date in YYYYMM format."
+  },
+  "004.01.04":{
+    "Message":"error.event.search.no.results",
+    "Explanation":"No matching events found for your search criteria."
+  },
+  "004.01.05":{
+    "Message":"error.event.invalid.resource.id",
+    "Explanation":"Invalid event ID. Please provide a valid event resource ID."
+  },
+  "004.01.06":{
+    "Message":"error.event.fundraiser.pages.no.results",
+    "Explanation":"No fundraiser pages found for the event."
+  }
+}

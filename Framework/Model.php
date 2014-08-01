@@ -3,7 +3,8 @@
  * Overall Model
  * The parent model for the app.
  *
- * @package: Framework\Model
+ * @package: Framework
+ * @category: Model
  * @author: Kris Pomphrey <kris@krispomphrey.co.uk>
  */
 class Model{
@@ -58,4 +59,20 @@ class Model{
 			}
 		}
 	}
+
+  /**
+   * Implements read_file();
+   *
+   * Function that will read dummy content.
+   */
+  public function read_file($path, $return = false){
+    if(file_exists($path)){
+      $file = file_get_contents($path);
+      if($return) {
+        return json_decode($file, true);
+      } else {
+        $this->data = json_decode($file, true);
+      }
+    } else return 'Data not found!';
+  }
 }

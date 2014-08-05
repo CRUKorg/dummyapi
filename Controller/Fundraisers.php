@@ -2,10 +2,10 @@
 /**
  * Fundraisers controller.
  * This is the controller for the fundraisers route.
- * 
+ *
  * In this controller, there are multiple switches to determine which
  * end point will be exposed to the users.
- * 
+ *
  * The controller assumes that it is to return JSON and as such,
  * headers aren't needed to get the data, however it is recommended to build the complete
  * calls as per the documentation.
@@ -25,7 +25,7 @@ class FundraisersController extends Controller{
   /**
    * Implements init();
    * Initialise the controller.
-   * 
+   *
    * There are multiple switches in this method that will determine what data
    * to return to the user.
    *
@@ -33,7 +33,7 @@ class FundraisersController extends Controller{
    * @uses FundraisersController::output_json() function to return formatted JSON.
    * @uses FundraisersModel::validate() to validate the data being parsed.
    * @uses FundraisersModel::set_error() to set the correct error message.
-   * 
+   *
    * @return void
    */
   public function init(){
@@ -86,7 +86,7 @@ class FundraisersController extends Controller{
             switch ($this->model->area){
 
               /**
-               * @api 
+               * @api
                * Case holds logic for endpoint: fundraisers/v1/search
                */
               case 'search' :
@@ -251,7 +251,7 @@ class FundraisersController extends Controller{
                  */
                 else {
                   // Say what fields we are expecitng to return.
-                  $expected_return = array('fundraiserName', 'title', 'forename', 'surname', 'resourceId', 'personalUrl, fundraisingURI', 'pageSummary');
+                  $expected_return = array('fundraiserName', 'title', 'forename', 'surname', 'resourceId', 'personalUrl', 'fundraiserURI', 'pageSummary');
 
                   // If we haven't errored out yet, this is the last thing to do.
                   if(empty($this->model->Error->errors)){
